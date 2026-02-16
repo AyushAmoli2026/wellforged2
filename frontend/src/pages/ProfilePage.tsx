@@ -29,6 +29,8 @@ interface Order {
     created_at: string;
     total_amount: string;
     status: string;
+    payment_status: string;
+    fulfillment_status: string;
     address_snapshot: any;
     items?: OrderItem[];
     payment?: Payment;
@@ -206,12 +208,21 @@ const ProfilePage = () => {
                                                 <div className="flex flex-col gap-1">
                                                     <div className="flex items-center gap-2">
                                                         <span className="font-mono text-sm font-semibold text-foreground">#{order.id.slice(0, 8).toUpperCase()}</span>
-                                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${order.status === 'completed' || order.status === 'delivered' ? 'bg-green-100 text-green-700' :
-                                                                order.status === 'pending' || order.status === 'processing' ? 'bg-amber-100 text-amber-700' :
-                                                                    'bg-gray-100 text-gray-600'
-                                                            }`}>
-                                                            {order.status}
-                                                        </span>
+                                                        <div className="flex gap-1.5 flex-wrap">
+                                                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${order.payment_status === 'completed' || order.payment_status === 'paid' ? 'bg-green-100 text-green-700' :
+                                                                    order.payment_status === 'failed' ? 'bg-red-100 text-red-700' :
+                                                                        'bg-amber-100 text-amber-700'
+                                                                }`}>
+                                                                Pay: {order.payment_status || 'pending'}
+                                                            </span>
+                                                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${order.fulfillment_status === 'delivered' ? 'bg-green-100 text-green-700' :
+                                                                    order.fulfillment_status === 'shipped' ? 'bg-blue-100 text-blue-700' :
+                                                                        order.fulfillment_status === 'processing' ? 'bg-indigo-100 text-indigo-700' :
+                                                                            'bg-amber-100 text-amber-700'
+                                                                }`}>
+                                                                {order.fulfillment_status || 'pending'}
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                                                         <Calendar className="h-3 w-3" />
@@ -279,7 +290,10 @@ const ProfilePage = () => {
                                                         <div className="p-3 rounded-xl bg-background border border-border/50">
                                                             <h5 className="font-semibold text-foreground mb-1 flex items-center gap-2"><Truck className="h-3.5 w-3.5" /> Delivery Status</h5>
                                                             <p className="text-muted-foreground text-xs">
-                                                                Your order is being processed and will be shipped soon.
+                                                                {order.fulfillment_status === 'delivered' ? 'Your order has been delivered.' :
+                                                                    order.fulfillment_status === 'shipped' ? 'Your order has been shipped and is on its way.' :
+                                                                        order.fulfillment_status === 'processing' ? 'Your order is being prepared for shipment.' :
+                                                                            'Your order is pending and will be processed soon.'}
                                                             </p>
                                                         </div>
                                                     </div>
