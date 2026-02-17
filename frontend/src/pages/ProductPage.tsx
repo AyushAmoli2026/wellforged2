@@ -89,7 +89,8 @@ const ProductPage = () => {
                                                     >
                                                         <img
                                                             src={img}
-                                                            alt={`WellForged Moringa - View ${index + 1}`}
+                                                            alt={`${trustHighlights[currentImageIndex]?.label || 'WellForged Moringa Product'} - View ${index + 1}`}
+                                                            loading={index === 0 ? "eager" : "lazy"}
                                                             className="w-full h-full object-contain p-2 sm:p-3"
                                                         />
                                                     </div>

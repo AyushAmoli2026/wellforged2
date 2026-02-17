@@ -32,13 +32,32 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { isLoggedIn, token } = useAuth();
 
+  // Load local cart on mount
+  useEffect(() => {
+    const localCart = localStorage.getItem("wellforged_cart");
+    if (localCart) {
+      try {
+        const parsed = JSON.parse(localCart);
+        if (Array.isArray(parsed) && !isLoggedIn) {
+          setItems(parsed);
+        }
+      } catch (e) {
+        console.error("Failed to parse local cart:", e);
+      }
+    }
+  }, [isLoggedIn]);
+
+  // Persist to localStorage on change (only if not logged in)
+  useEffect(() => {
+    if (!isLoggedIn) {
+      localStorage.setItem("wellforged_cart", JSON.stringify(items));
+    }
+  }, [items, isLoggedIn]);
+
   // Sync with backend on login
   useEffect(() => {
     if (isLoggedIn && token) {
       syncCartWithBackend();
-    } else if (!isLoggedIn) {
-      // Potentially clear or keep local cart depending on UX
-      // For now we keep it local
     }
   }, [isLoggedIn, token]);
 
@@ -53,8 +72,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
       if (response.ok) {
         // 2. If local cart has items, merge them
-        if (items.length > 0) {
-          const bulkItems = items.map(item => ({ product_id: item.id, quantity: item.quantity }));
+        const localCart = localStorage.getItem("wellforged_cart");
+        let itemsToMerge = items;
+
+        if (localCart && items.length === 0) {
+          itemsToMerge = JSON.parse(localCart);
+        }
+
+        if (itemsToMerge.length > 0) {
+          const bulkItems = itemsToMerge.map(item => ({ product_id: item.id, quantity: item.quantity }));
           await fetch("http://localhost:5000/api/cart/bulk-add", {
             method: "POST",
             headers: {
@@ -63,6 +89,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             },
             body: JSON.stringify({ items: bulkItems })
           });
+
+          // Clear local guest cart after merge
+          localStorage.removeItem("wellforged_cart");
 
           // Re-fetch after merge
           const finalResponse = await fetch("http://localhost:5000/api/cart", {
@@ -94,9 +123,24 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const addItem = async (newItem: Omit<CartItem, "quantity">, quantity = 1) => {
+    setItems((prev) => {
+      const existingItem = prev.find((item) => item.id === newItem.id);
+      let updatedItems;
+      if (existingItem) {
+        updatedItems = prev.map((item) =>
+          item.id === newItem.id
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
+      } else {
+        updatedItems = [...prev, { ...newItem, quantity }];
+      }
+      return updatedItems;
+    });
+
     if (isLoggedIn && token) {
       try {
-        const response = await fetch("http://localhost:5000/api/cart/add", {
+        await fetch("http://localhost:5000/api/cart/add", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -104,29 +148,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           },
           body: JSON.stringify({ product_id: newItem.id, quantity })
         });
-
-        if (!response.ok) {
-          const error = await response.json();
-          console.error("Failed to add item to backend cart:", error);
-          // Still update local state for better UX, but log the error
-        }
       } catch (error) {
         console.error("Failed to add item to backend cart:", error);
-        // Still update local state even if backend fails
       }
     }
-
-    setItems((prev) => {
-      const existingItem = prev.find((item) => item.id === newItem.id);
-      if (existingItem) {
-        return prev.map((item) =>
-          item.id === newItem.id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
-      }
-      return [...prev, { ...newItem, quantity }];
-    });
   };
 
   const updateQuantity = async (id: string, quantity: number) => {
@@ -135,10 +160,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
+    setItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
+    );
+
     if (isLoggedIn && token) {
       try {
-        // Use product_id for updates as our backend controller expects cart_item_id but we can add a new endpoint or just use add for now
-        // Simplest fix: Use the addItem logic which handles "update if exists" via ON CONFLICT in backend
         const currentItem = items.find(i => i.id === id);
         if (currentItem) {
           const diff = quantity - currentItem.quantity;
@@ -157,17 +184,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         console.error("Failed to update quantity in backend:", error);
       }
     }
-
-    setItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
-    );
   };
 
   const removeItem = async (id: string) => {
+    setItems((prev) => prev.filter((item) => item.id !== id));
+
     if (isLoggedIn && token) {
       try {
-        // Backend removeCartItem expects the cart_item table ID.
-        // Let's modify backend to allow delete by product_id.
         await fetch(`http://localhost:5000/api/cart/product/${id}`, {
           method: "DELETE",
           headers: { "Authorization": `Bearer ${token}` }
@@ -176,11 +199,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         console.error("Failed to remove item from backend:", error);
       }
     }
-    setItems((prev) => prev.filter((item) => item.id !== id));
   };
 
   const clearCart = () => {
     setItems([]);
+    if (!isLoggedIn) {
+      localStorage.removeItem("wellforged_cart");
+    }
   };
 
   const hasItem = (id: string) => items.some((item) => item.id === id);
