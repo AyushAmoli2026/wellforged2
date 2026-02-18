@@ -36,11 +36,12 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-12 sm:h-14 lg:h-16">
           <div className="flex items-center gap-1.5 sm:gap-3">
             {isSubPage && (
-              <Link to="/" onClick={() => window.scrollTo(0, 0)}>
-                <Button variant="ghost" size="icon" className="h-11 w-11 transition-all duration-300 hover:-translate-x-1">
-                  <ArrowLeft className="h-5 w-5" />
-                </Button>
-              </Link>
+              <button 
+                onClick={() => navigate(-1)} 
+                className="h-11 w-11 transition-all duration-300 hover:-translate-x-1 flex items-center justify-center rounded-md hover:bg-muted"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </button>
             )}
             <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center gap-2 group">
               <img src={currentLogo} alt="WellForged" className={`object-contain ${isHomePage ? 'h-auto w-32 sm:w-40 lg:w-48' : 'h-8 sm:h-9 lg:h-10 w-auto'}`} />
@@ -78,6 +79,9 @@ const Navbar = () => {
             )}
           </div>
           <div className="flex md:hidden items-center gap-1">
+            <Link to="/product" className="relative p-2.5 hover:bg-muted rounded-full transition-colors font-body text-sm font-semibold text-primary" aria-label="Shop">
+              Shop
+            </Link>
             {isLoggedIn ? (
               <>
                 <button onClick={() => setCartOpen(true)} className="relative p-3 hover:bg-muted rounded-full transition-colors" aria-label="Open cart">
@@ -108,9 +112,9 @@ const Navbar = () => {
           <div className="py-3 sm:py-4 border-t border-border">
             <div className="flex flex-col items-center gap-2 sm:gap-3 text-center">
               {isSubPage && (
-                <Link to="/" className="flex items-center justify-center gap-2 text-foreground/80 hover:text-foreground font-body text-base py-2 transition-all duration-300" onClick={() => { setIsOpen(false); window.scrollTo(0, 0); }}>
-                  <ArrowLeft className="h-4 w-4" /> Back to Home
-                </Link>
+                <button className="flex items-center justify-center gap-2 text-foreground/80 hover:text-foreground font-body text-base py-2 transition-all duration-300" onClick={() => { setIsOpen(false); navigate(-1); }}>
+                  <ArrowLeft className="h-4 w-4" /> Go Back
+                </button>
               )}
               {navLinks.map((link, index) => (
                 <Link key={link.name} to={link.href} className="text-foreground/80 hover:text-foreground font-body text-base py-2 transition-all duration-300" onClick={() => { setIsOpen(false); window.scrollTo(0, 0); }} style={{ transitionDelay: `${index * 50}ms` }}>

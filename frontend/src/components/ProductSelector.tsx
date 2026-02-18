@@ -130,7 +130,7 @@ const ProductSelector = () => {
           )}
         </Button>
         {totalItems > 0 && (
-          <Button variant="outline" size="xl" className="w-full h-11 sm:h-12 gap-2 text-sm" onClick={() => setIsOpen(true)}>
+          <Button variant="outline" size="xl" className="w-full h-11 sm:h-12 gap-2 text-sm hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all duration-300" onClick={() => setIsOpen(true)}>
             <ShoppingBag className="h-4 w-4" /> Go to Cart ({totalItems})
           </Button>
         )}
