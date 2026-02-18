@@ -68,6 +68,37 @@ const ProductPage = () => {
             <Helmet>
                 <title>WellForged Moringa Leaf Powder | Clean Single-Ingredient Wellness</title>
                 <meta name="description" content="WellForged Moringa Leaf Powder - Clean, single-ingredient moringa powder crafted with disciplined sourcing, careful processing, and verified quality." />
+                <script type="application/ld+json">
+                    {`
+                    {
+                      "@context": "https://schema.org/",
+                      "@type": "Product",
+                      "name": "WellForged Moringa Leaf Powder",
+                      "image": [
+                        "https://wellforged.in/assets/product-carousel-1.jpg"
+                      ],
+                      "description": "Pure, nutrient-rich moringa powder—lab tested, no fillers, nothing hidden. Just nature's most powerful green, delivered fresh.",
+                      "sku": "WF-MOR-250",
+                      "brand": {
+                        "@type": "Brand",
+                        "name": "WellForged"
+                      },
+                      "offers": {
+                        "@type": "Offer",
+                        "url": "https://wellforged.in/product",
+                        "priceCurrency": "INR",
+                        "price": "499",
+                        "availability": "https://schema.org/InStock",
+                        "itemCondition": "https://schema.org/NewCondition"
+                      },
+                      "aggregateRating": {
+                        "@type": "AggregateRating",
+                        "ratingValue": "4.9",
+                        "reviewCount": "128"
+                      }
+                    }
+                  `}
+                </script>
             </Helmet>
             <Navbar />
             <main className="min-h-screen bg-background pt-12 sm:pt-14 lg:pt-16">

@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Package, User, LogOut, ChevronRight, ShoppingBag, ExternalLink, Calendar, MapPin, Truck } from "lucide-react";
+import { ArrowLeft, Package, User, LogOut, ChevronRight, ShoppingBag, ExternalLink, Calendar, MapPin, Truck, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
+import { API_BASE_URL } from "@/config";
 
 interface OrderItem {
     id: string;
@@ -51,7 +52,7 @@ const ProfilePage = () => {
 
         const fetchOrders = async () => {
             try {
-                const response = await fetch("http://localhost:5000/api/orders", {
+                const response = await fetch(`${API_BASE_URL}/api/orders`, {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }
@@ -93,7 +94,7 @@ const ProfilePage = () => {
         const order = orders.find(o => o.id === orderId);
         if (order && !order.items) {
             try {
-                const response = await fetch(`http://localhost:5000/api/orders/${orderId}`, {
+                const response = await fetch(`${API_BASE_URL}/api/orders/${orderId}`, {
                     headers: { "Authorization": `Bearer ${token}` }
                 });
                 if (response.ok) {
@@ -150,6 +151,14 @@ const ProfilePage = () => {
                                 </div>
                                 <h2 className="font-display font-semibold text-xl text-foreground text-center md:text-left">{user?.first_name} {user?.last_name}</h2>
                                 <p className="font-body text-sm text-muted-foreground text-center md:text-left mb-6">{user?.email}</p>
+
+                                {user?.role === 'admin' && (
+                                    <Link to="/admin" className="block mb-6">
+                                        <Button className="w-full gap-2 bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm">
+                                            <ShieldCheck className="h-4 w-4" /> Admin Dashboard
+                                        </Button>
+                                    </Link>
+                                )}
 
                                 <div className="space-y-3">
                                     <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-xl">
@@ -210,15 +219,15 @@ const ProfilePage = () => {
                                                         <span className="font-mono text-sm font-semibold text-foreground">#{order.id.slice(0, 8).toUpperCase()}</span>
                                                         <div className="flex gap-1.5 flex-wrap">
                                                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${order.payment_status === 'completed' || order.payment_status === 'paid' ? 'bg-green-100 text-green-700' :
-                                                                    order.payment_status === 'failed' ? 'bg-red-100 text-red-700' :
-                                                                        'bg-amber-100 text-amber-700'
+                                                                order.payment_status === 'failed' ? 'bg-red-100 text-red-700' :
+                                                                    'bg-amber-100 text-amber-700'
                                                                 }`}>
                                                                 Pay: {order.payment_status || 'pending'}
                                                             </span>
                                                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${order.fulfillment_status === 'delivered' ? 'bg-green-100 text-green-700' :
-                                                                    order.fulfillment_status === 'shipped' ? 'bg-blue-100 text-blue-700' :
-                                                                        order.fulfillment_status === 'processing' ? 'bg-indigo-100 text-indigo-700' :
-                                                                            'bg-amber-100 text-amber-700'
+                                                                order.fulfillment_status === 'shipped' ? 'bg-blue-100 text-blue-700' :
+                                                                    order.fulfillment_status === 'processing' ? 'bg-indigo-100 text-indigo-700' :
+                                                                        'bg-amber-100 text-amber-700'
                                                                 }`}>
                                                                 {order.fulfillment_status || 'pending'}
                                                             </span>

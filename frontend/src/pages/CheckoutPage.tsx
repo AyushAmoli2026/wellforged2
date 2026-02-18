@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { API_BASE_URL } from "@/config";
 
 const CheckoutPage = () => {
   const { items, subtotal, clearCart } = useCart();
@@ -52,7 +53,7 @@ const CheckoutPage = () => {
     const fetchAddresses = async () => {
       if (!token) return;
       try {
-        const response = await fetch("http://localhost:5000/api/cart/addresses", {
+        const response = await fetch(`${API_BASE_URL}/api/cart/addresses`, {
           headers: { "Authorization": `Bearer ${token}` }
         });
         if (response.ok) {
@@ -94,7 +95,7 @@ const CheckoutPage = () => {
 
     setIsValidatingCoupon(true);
     try {
-      const response = await fetch("http://localhost:5000/api/coupons/validate", {
+      const response = await fetch(`${API_BASE_URL}/api/coupons/validate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: couponCode, subtotal })
@@ -155,7 +156,7 @@ const CheckoutPage = () => {
 
       // If adding new address, create it
       if (isAddingNewAddress) {
-        const addressResponse = await fetch("http://localhost:5000/api/cart/addresses", {
+        const addressResponse = await fetch(`${API_BASE_URL}/api/cart/addresses`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -178,7 +179,7 @@ const CheckoutPage = () => {
       }
 
       // 2. Create Order
-      const orderResponse = await fetch("http://localhost:5000/api/orders", {
+      const orderResponse = await fetch(`${API_BASE_URL}/api/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -195,7 +196,7 @@ const CheckoutPage = () => {
       if (!orderResponse.ok) throw new Error(orderData.message || "Failed to create order");
 
       // 3. Record Payment (Simulation for now, but recording in DB)
-      const paymentResponse = await fetch("http://localhost:5000/api/orders/payment", {
+      const paymentResponse = await fetch(`${API_BASE_URL}/api/orders/payment`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

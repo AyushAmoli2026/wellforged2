@@ -5,6 +5,7 @@ import { ArrowLeft, Shield, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
+import { API_BASE_URL } from "@/config";
 import logo from "@/assets/WellForged_Shield_Logo.png";
 import productImage from "@/assets/Packaging_Updated.png";
 
@@ -47,7 +48,7 @@ const AuthPage = () => {
         }
 
         try {
-            const response = await fetch("http://localhost:5000/api/auth/signup", {
+            const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -128,7 +129,7 @@ const AuthPage = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch("http://localhost:5000/api/auth/login", {
+            const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

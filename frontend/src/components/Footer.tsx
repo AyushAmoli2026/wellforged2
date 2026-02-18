@@ -48,7 +48,12 @@ const Footer = () => {
             </ul>
           </div>
           <div className="flex flex-col items-start">
-            <h4 className="font-display text-[10px] sm:text-xs font-semibold text-foreground uppercase tracking-wider mb-1.5 sm:mb-2">Follow Us</h4>
+            <h4 className="font-display text-[10px] sm:text-xs font-semibold text-foreground uppercase tracking-wider mb-1.5 sm:mb-2">Legal</h4>
+            <ul className="space-y-1.5 sm:space-y-2 mb-4">
+              <li><Link to="/privacy-policy" className="font-body text-muted-foreground hover:text-foreground transition-colors py-1.5 inline-block text-[var(--text-sm)]">Privacy Policy</Link></li>
+              <li><Link to="/terms-of-service" className="font-body text-muted-foreground hover:text-foreground transition-colors py-1.5 inline-block text-[var(--text-sm)]">Terms of Service</Link></li>
+              <li><Link to="/refund-policy" className="font-body text-muted-foreground hover:text-foreground transition-colors py-1.5 inline-block text-[var(--text-sm)]">Refund Policy</Link></li>
+            </ul>
             <div className="flex items-center gap-3 mt-1">
               {socialLinks.map((social) => (
                 <a key={social.label} href={social.href} className="h-10 w-10 flex items-center justify-center rounded-full bg-muted hover:bg-primary hover:text-primary-foreground transition-all duration-300" aria-label={social.label}>
@@ -60,8 +65,11 @@ const Footer = () => {
           </div>
         </div>
         <div className="border-t border-border mt-3 sm:mt-6 pt-3 sm:pt-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p className="font-body text-[9px] sm:text-[10px] text-muted-foreground">© {new Date().getFullYear()} WellForged. All rights reserved.</p>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6">
+              <p className="font-body text-[9px] sm:text-[10px] text-muted-foreground">© {new Date().getFullYear()} WellForged. All rights reserved.</p>
+              <p className="font-mono text-[9px] text-muted-foreground bg-muted/50 px-2 py-0.5 rounded border border-border/50">FSSAI Lic. No. 1002XXXXXXXXXX</p>
+            </div>
             <div className="flex items-center gap-1.5 px-2 py-0.5 bg-primary/5 border border-primary/20 rounded-full">
               <Shield className="h-3 w-3 text-primary" /><CheckCircle className="h-2.5 w-2.5 text-primary" /><span className="font-body text-[9px] font-medium text-primary">Secure & Verified</span>
             </div>

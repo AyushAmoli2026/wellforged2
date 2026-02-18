@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import logo from "@/assets/WellForged_Shield_Logo.png";
 import AnimatedLogo from "@/components/AnimatedLogo";
 import { useAuth } from "@/context/AuthContext";
+import { API_BASE_URL } from "@/config";
 
 // Hardcoded data removed, fetching from backend instead
 interface TestResult { name: string; result: string; status: "passed" | "failed"; limit: string; }
@@ -96,7 +97,7 @@ const TransparencyPage = () => {
     }, 800);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/inventory/batch-report?batch_number=${trimmedBatch}`, {
+      const response = await fetch(`${API_BASE_URL}/api/inventory/batch-report?batch_number=${trimmedBatch}`, {
         headers: {
           ...(token ? { "Authorization": `Bearer ${token}` } : {})
         }

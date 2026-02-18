@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
+import { API_BASE_URL } from "@/config";
 import productImage from "@/assets/Packaging_Updated.png";
 
 interface SKU {
@@ -32,7 +33,7 @@ const ProductSelector = () => {
   useEffect(() => {
     const fetchStock = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/products");
+        const response = await fetch(`${API_BASE_URL}/api/products`);
         if (response.ok) {
           const products = await response.json();
           const updatedSkus = skus.map(sku => {

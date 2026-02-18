@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { useAuth } from "./AuthContext";
+import { trackEvent } from "@/utils/analytics";
+import { API_BASE_URL } from "@/config";
 
 export interface CartItem {
   id: string;
@@ -65,7 +67,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     try {
       // 1. Get current backend cart
-      const response = await fetch("http://localhost:5000/api/cart", {
+      const response = await fetch(`${API_BASE_URL}/api/cart`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const data = await response.json();
@@ -81,7 +83,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
         if (itemsToMerge.length > 0) {
           const bulkItems = itemsToMerge.map(item => ({ product_id: item.id, quantity: item.quantity }));
-          await fetch("http://localhost:5000/api/cart/bulk-add", {
+          await fetch(`${API_BASE_URL}/api/cart/bulk-add`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -94,7 +96,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           localStorage.removeItem("wellforged_cart");
 
           // Re-fetch after merge
-          const finalResponse = await fetch("http://localhost:5000/api/cart", {
+          const finalResponse = await fetch(`${API_BASE_URL}/api/cart`, {
             headers: { "Authorization": `Bearer ${token}` }
           });
           const finalData = await finalResponse.json();
@@ -138,9 +140,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return updatedItems;
     });
 
+    trackEvent("add_to_cart", {
+      item_id: newItem.id,
+      item_name: newItem.name,
+      price: newItem.price,
+      quantity
+    });
+
     if (isLoggedIn && token) {
       try {
-        await fetch("http://localhost:5000/api/cart/add", {
+        await fetch(`${API_BASE_URL}/api/cart/add`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -191,7 +200,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     if (isLoggedIn && token) {
       try {
-        await fetch(`http://localhost:5000/api/cart/product/${id}`, {
+        await fetch(`${API_BASE_URL}/api/cart/product/${id}`, {
           method: "DELETE",
           headers: { "Authorization": `Bearer ${token}` }
         });
