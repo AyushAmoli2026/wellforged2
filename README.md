@@ -26,6 +26,23 @@ WellForged is a premium D2C e-commerce platform built for a supplement brand tha
 - **Security**: JWT Authentication, Zod Request Validation, Centralized Error Handling
 - **Utilities**: `pg` (PostgreSQL Client), `crypto` (Idempotency), `dotenv`
 
+## 🗺️ System Topology
+
+```mermaid
+graph TD
+    User((User)) <--> Frontend[Vite/React Frontend]
+    Frontend <--> API[Express Backend]
+    API <--> DB[(PostgreSQL Database)]
+    API -- "Logs/Email" --> Mailer[Mailer Service Stub]
+    Frontend -- "Batch ID" --> LabReports[Transparency Portal]
+```
+
+## 📂 Repository Navigation (AI-Friendly)
+- **[/frontend](file:///d:/wellforged%20-%202/frontend)**: Client-side application and UI components.
+- **[/Backend](file:///d:/wellforged%20-%202/Backend)**: RESTful API and database controllers.
+- **[/docs](file:///d:/wellforged%20-%202/docs)**: Technical specifications and architecture deep-dives.
+- **[package.json](file:///d:/wellforged%20-%202/package.json)**: Root manifest defining the workspace structure.
+
 ## 📊 Database Schema
 
 ```mermaid
