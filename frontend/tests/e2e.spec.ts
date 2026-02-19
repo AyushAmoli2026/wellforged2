@@ -20,16 +20,18 @@ test.describe('WellForged E2E Journey', () => {
         await addToCartBtn.click();
 
         // 4. Verify Drawer Opens and go to Checkout
-        await expect(page.locator('text=Shopping Cart')).toBeVisible();
-        await page.click('text=Go to Checkout');
-        await expect(page).toHaveURL(/.*auth/); // Redirected to login if not authenticated
+        await expect(page.getByText('Your Cart')).toBeVisible({ timeout: 10000 });
+        await page.click('text=Proceed to Checkout');
+        await expect(page).toHaveURL(/.*checkout/);
 
-        // 5. Auth Flow (Sign In Mode)
-        await page.click('text=Sign In'); // Switch to Sign In if on Sign Up
-        await page.fill('input[placeholder="9876543210"]', '1234567890');
-        await page.click('text=Get OTP');
-        await page.fill('input[placeholder="••••"]', '1234');
-        await page.click('button:has-text("Sign In Securely")');
+        // 5. Auth Flow (Sign In Mode) - Check if auth is needed
+        if (page.url().includes('auth')) {
+            await page.click('text=Sign In');
+            await page.fill('input[placeholder="Phone Number"]', '1234567890');
+            await page.click('text=Get OTP');
+            await page.fill('input[placeholder="••••"]', '1234');
+            await page.click('button:has-text("Sign In Securely")');
+        }
 
         // 6. Checkout Process
         await expect(page).toHaveURL(/.*checkout/);

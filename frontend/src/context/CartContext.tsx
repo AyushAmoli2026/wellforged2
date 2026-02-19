@@ -140,6 +140,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return updatedItems;
     });
 
+    setIsOpen(true);
+
     trackEvent("add_to_cart", {
       item_id: newItem.id,
       item_name: newItem.name,
