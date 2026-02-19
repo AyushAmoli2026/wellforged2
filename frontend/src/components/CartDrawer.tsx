@@ -62,7 +62,7 @@ const CartDrawer = () => {
             <button onClick={() => setIsOpen(false)} className="w-full text-center font-body text-sm text-muted-foreground hover:text-foreground transition-colors py-3">Continue Shopping</button>
           </div>
         </>
-        )}
+        )
       </SheetContent>
     </Sheet>
   );
