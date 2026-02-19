@@ -47,21 +47,18 @@ const Footer = () => {
               ))}
             </ul>
           </div>
-          <div className="flex flex-col items-start">
-            <h4 className="font-display text-[10px] sm:text-xs font-semibold text-foreground uppercase tracking-wider mb-1.5 sm:mb-2">Legal</h4>
-            <ul className="space-y-1.5 sm:space-y-2 mb-4">
-              <li><Link to="/privacy-policy" className="font-body text-muted-foreground hover:text-foreground transition-colors py-1.5 inline-block text-[var(--text-sm)]">Privacy Policy</Link></li>
-              <li><Link to="/terms-of-service" className="font-body text-muted-foreground hover:text-foreground transition-colors py-1.5 inline-block text-[var(--text-sm)]">Terms of Service</Link></li>
-              <li><Link to="/refund-policy" className="font-body text-muted-foreground hover:text-foreground transition-colors py-1.5 inline-block text-[var(--text-sm)]">Refund Policy</Link></li>
-            </ul>
-            <div className="flex items-center gap-3 mt-1">
-              {socialLinks.map((social) => (
-                <a key={social.label} href={social.href} className="h-10 w-10 flex items-center justify-center rounded-full bg-muted hover:bg-primary hover:text-primary-foreground transition-all duration-300" aria-label={social.label}>
-                  <social.icon className="h-4 w-4" />
-                </a>
-              ))}
+          <div className="flex flex-col items-start lg:col-span-1">
+            <h4 className="font-display text-[10px] sm:text-xs font-semibold text-foreground uppercase tracking-wider mb-2 sm:mb-3">Transparency Guarantee</h4>
+            <div className="bg-primary/5 border border-primary/10 rounded-xl p-3 sm:p-4 mb-4">
+              <p className="font-body text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
+                If your batch lab report doesn't match our online database, get a <span className="text-foreground font-bold italic">100% Instant Refund</span>. No questions asked.
+              </p>
             </div>
-            <Link to="/transparency" onClick={() => window.scrollTo(0, 0)} className="font-body text-[10px] sm:text-xs text-primary hover:underline mt-4">Transparency Portal →</Link>
+            <div className="flex flex-wrap gap-2">
+              <span className="px-2 py-1 bg-muted rounded text-[9px] font-mono text-muted-foreground uppercase">NABL Accredited</span>
+              <span className="px-2 py-1 bg-muted rounded text-[9px] font-mono text-muted-foreground uppercase">FSSAI Certified</span>
+              <span className="px-2 py-1 bg-muted rounded text-[9px] font-mono text-muted-foreground uppercase">ISO 22000</span>
+            </div>
           </div>
         </div>
         <div className="border-t border-border mt-3 sm:mt-6 pt-3 sm:pt-4">

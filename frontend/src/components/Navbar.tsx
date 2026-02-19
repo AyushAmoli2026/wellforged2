@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, ArrowLeft, ShoppingCart, LogIn, LogOut, User } from "lucide-react";
+import { Menu, X, ArrowLeft, ShoppingCart, LogIn, LogOut, User, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
@@ -20,7 +20,6 @@ const Navbar = () => {
   const allLinks = [
     { name: "Home", href: "/" },
     { name: "Shop", href: "/product" },
-    { name: "Transparency", href: "/transparency" },
   ];
 
   const navLinks = allLinks.filter(link => {
@@ -36,8 +35,8 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-12 sm:h-14 lg:h-16">
           <div className="flex items-center gap-1.5 sm:gap-3">
             {isSubPage && (
-              <button 
-                onClick={() => navigate(-1)} 
+              <button
+                onClick={() => navigate(-1)}
                 className="h-11 w-11 transition-all duration-300 hover:-translate-x-1 flex items-center justify-center rounded-md hover:bg-muted"
               >
                 <ArrowLeft className="h-5 w-5" />
@@ -56,6 +55,10 @@ const Navbar = () => {
             ))}
           </div>
           <div className="hidden md:flex items-center gap-3">
+            <Link to="/transparency" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-primary/5 transition-colors group">
+              <Shield className="h-4 w-4 text-primary" />
+              <span className="font-body text-xs font-bold uppercase tracking-wider text-primary">Verify Batch</span>
+            </Link>
             {isLoggedIn ? (
               <>
                 <button onClick={() => setCartOpen(true)} className="relative p-3 hover:bg-muted rounded-full transition-colors" aria-label="Open cart">

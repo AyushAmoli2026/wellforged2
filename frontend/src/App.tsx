@@ -16,6 +16,7 @@ import ProductPage from "./pages/ProductPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import AuthPage from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
@@ -58,6 +59,11 @@ const App = () => (
                                     <Route path="/profile" element={
                                         <ProtectedRoute>
                                             <ProfilePage />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/order-success" element={
+                                        <ProtectedRoute>
+                                            <OrderSuccessPage />
                                         </ProtectedRoute>
                                     } />
                                     <Route path="/admin" element={

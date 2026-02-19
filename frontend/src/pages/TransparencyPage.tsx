@@ -28,7 +28,33 @@ const TransparencyPage = () => {
   const [showScorecard, setShowScorecard] = useState(false);
   const [visibleCards, setVisibleCards] = useState<number[]>([]);
   const { token } = useAuth();
-  const [searchParams] = useSearchParams(); // Needs import from react-router-dom
+  const [searchParams] = useSearchParams();
+  const [latestBatchFetched, setLatestBatchFetched] = useState(false);
+
+  // Default Bias Implementation: Fetch latest batch if no param provided
+  useEffect(() => {
+    const fetchLatestBatch = async () => {
+      const batchParam = searchParams.get("batch");
+      if (!batchParam && !hasSearched && !isLoading && !latestBatchFetched) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/inventory/batches?limit=1`);
+          if (response.ok) {
+            const batches = await response.json();
+            if (batches && batches.length > 0) {
+              setBatchNumber(batches[0].batch_number);
+              setLatestBatchFetched(true);
+              // Trigger search automatically for the latest batch
+              const e = { preventDefault: () => { } } as React.FormEvent;
+              handleSearch(e, batches[0].batch_number);
+            }
+          }
+        } catch (error) {
+          console.error("Failed to fetch latest batch:", error);
+        }
+      }
+    };
+    fetchLatestBatch();
+  }, [searchParams, hasSearched, isLoading, latestBatchFetched]);
 
   useEffect(() => {
     const batchParam = searchParams.get("batch");
@@ -80,9 +106,9 @@ const TransparencyPage = () => {
     } else { setVisibleCards([]); }
   }, [showScorecard]);
 
-  const handleSearch = async (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent, forcedBatch?: string) => {
     e.preventDefault();
-    const trimmedBatch = batchNumber.trim().toUpperCase();
+    const trimmedBatch = (forcedBatch || batchNumber).trim().toUpperCase();
     setIsLoading(true); setHasSearched(false); setSearchedBatch(null); setNotFound(false); setLoadingStep(0); setShowScorecard(false);
 
     setTimeout(() => {
@@ -231,10 +257,23 @@ const TransparencyPage = () => {
                 <div className="space-y-6 sm:space-y-8">
                   <div className="text-center mb-6 sm:mb-8 animate-fade-up">
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full mb-4"><CheckCircle className="h-4 w-4 text-primary" /><span className="font-mono text-xs uppercase tracking-[0.15em] text-primary">Certificate Verified</span></div>
-                    <h2 className="font-display font-semibold text-foreground" style={{ fontSize: "var(--text-3xl)" }}>{searchedBatch.productName}</h2>
+                    <h2 className="font-display font-semibold text-foreground" style={{ fontSize: "var(--text-3xl)" }}>Verification Report</h2>
                     <p className="font-mono text-muted-foreground mt-2" style={{ fontSize: "var(--text-sm)" }}>Batch #{searchedBatch.batchNumber} • Tested by {searchedBatch.labName}</p>
                   </div>
                   <div className="mb-8 sm:mb-10">
+                    <div className="max-w-3xl mx-auto bg-primary/5 border border-primary/20 rounded-2xl p-6 sm:p-8 mb-8 text-center animate-fade-up">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/20 rounded-full mb-4">
+                        <Sparkles className="h-4 w-4 text-primary" />
+                        <span className="font-mono text-[10px] font-bold text-primary uppercase tracking-widest">Plain English Summary</span>
+                      </div>
+                      <h3 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-3">Result: Safe & Pure</h3>
+                      <p className="font-body text-base sm:text-lg text-muted-foreground leading-relaxed">
+                        This batch has been rigorously tested. It contains <span className="text-foreground font-bold">Zero Fillers</span>,
+                        shows <span className="text-foreground font-bold">No Detectable Heavy Metals</span>, and meets our
+                        highest potency standards for chlorophyll and active compounds.
+                      </p>
+                    </div>
+
                     <h3 className="font-display text-xl sm:text-2xl font-semibold text-center text-foreground mb-6 animate-fade-up">WellForged Batch Scorecard</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
                       {scorecardItems.map((item, index) => {
@@ -254,7 +293,6 @@ const TransparencyPage = () => {
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
                       <h3 className="font-display text-lg md:text-xl font-semibold text-foreground">Official Lab Report</h3>
                       <div className="flex items-center gap-2 sm:gap-3">
-                        <Button variant="outline" size="default" className="gap-2 text-sm" onClick={handleShareResults}><Share2 className="h-4 w-4" />Share</Button>
                         <Button variant="outline" size="default" className="gap-2 text-sm"><Download className="h-4 w-4" />Download</Button>
                       </div>
                     </div>

@@ -8,9 +8,9 @@ test.describe('WellForged E2E Journey', () => {
         await expect(page).toHaveTitle(/WellForged/);
 
         // 2. Navigate to Shop
-        const shopLink = page.getByRole('link', { name: 'Shop', exact: true }).first();
-        await expect(shopLink).toBeVisible();
-        await shopLink.click();
+        const shopCTA = page.locator('text=Shop the Evidence').first();
+        await expect(shopCTA).toBeVisible({ timeout: 20000 });
+        await shopCTA.click();
         await expect(page).toHaveURL(/.*product/);
 
         // 3. Select a product and add to cart
@@ -51,9 +51,9 @@ test.describe('WellForged E2E Journey', () => {
         await expect(payBtn).toBeVisible();
         await payBtn.click();
 
-        // 9. Verify Success & Order History
-        await expect(page).toHaveURL(/.*profile/);
-        await expect(page.locator('text=Order History')).toBeVisible();
+        // 9. Verify Success & Enhanced Order Confirmation
+        await expect(page).toHaveURL(/.*order-success/);
+        await expect(page.locator('text=Investment Confirmed')).toBeVisible();
     });
 
     test('Extreme Case: Out of Stock Validation', async ({ page }) => {
@@ -97,7 +97,7 @@ test.describe('WellForged E2E Journey', () => {
         if (!isMobile) return;
 
         await page.goto('/');
-        const menuBtn = page.locator('button[aria-label="Toggle Menu"]');
+        const menuBtn = page.getByRole('button', { name: /toggle menu/i });
         await menuBtn.click();
         await expect(page.locator('nav >> text=Shop')).toBeVisible();
     });

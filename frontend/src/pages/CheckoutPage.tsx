@@ -218,7 +218,7 @@ const CheckoutPage = () => {
 
       toast.success("Order placed successfully!");
       clearCart();
-      navigate("/profile");
+      navigate("/order-success");
     } catch (error: any) {
       toast.error(error.message || "Something went wrong");
     } finally {
@@ -454,7 +454,16 @@ const CheckoutPage = () => {
                       {isSubmitting ? "Processing..." : `Pay ₹${total.toLocaleString()}`}
                     </Button>
                   )}
-                  <div className="flex flex-wrap justify-center gap-3 pt-3 border-t border-border">
+                  <div className="flex flex-wrap justify-center gap-3 pt-3 border-t border-border mt-4">
+                    <div className="w-full bg-primary/5 border border-primary/20 rounded-xl p-3 sm:p-4 mb-2">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <Shield className="h-4 w-4 text-primary" />
+                        <span className="font-display text-xs font-bold text-foreground">Money-Back Transparency Guarantee</span>
+                      </div>
+                      <p className="font-body text-[10px] text-muted-foreground leading-snug">
+                        If your specific batch lab report isn't available or shows any impurity, we'll refund your entire order immediately.
+                      </p>
+                    </div>
                     <div className="flex items-center gap-1.5 text-muted-foreground">
                       <Shield className="h-4 w-4 text-primary" />
                       <span className="font-body text-xs">Secure Payment</span>

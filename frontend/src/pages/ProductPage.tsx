@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Check, Leaf, Shield, FlaskConical, QrCode, Atom, Droplet, Heart, Globe, Clock, Award, Star, CheckCircle, HelpCircle, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Play } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -18,6 +18,16 @@ const ProductPage = () => {
     const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+    const [isTransitioning, setIsTransitioning] = useState(false);
+    const navigate = useNavigate();
+
+    const handleProcessTransition = () => {
+        setIsTransitioning(true);
+        setTimeout(() => {
+            navigate("/transparency");
+            window.scrollTo(0, 0);
+        }, 800);
+    };
 
     const productImages = [productImage1, productImage2, productImage3, productImage4, productImage5];
 
@@ -105,24 +115,23 @@ const ProductPage = () => {
                 <section className="py-2 sm:py-4 lg:py-6">
                     <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
                         <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-12">
-                            <div className="lg:sticky lg:top-20 lg:self-start">
+                            <div className="lg:sticky lg:top-24 lg:self-start">
                                 <ScrollReveal animation="fade-right">
                                     <div className="relative group">
-                                        <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-br from-primary/10 to-gold/10 rounded-xl sm:rounded-3xl blur-lg sm:blur-2xl opacity-60 group-hover:opacity-100 transition-opacity duration-700" />
-                                        <div className="relative bg-secondary rounded-xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/10 w-full max-w-[380px] sm:max-w-[480px] lg:max-w-full mx-auto m-[2%] -mt-[2%]">
-                                            <div className="aspect-[5/4] relative overflow-hidden bg-white">
+                                        <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-br from-primary/20 via-gold/30 to-primary/20 rounded-xl sm:rounded-3xl blur-xl sm:blur-2xl opacity-40 group-hover:opacity-100 transition-all duration-1000" />
+                                        <div className="relative bg-white rounded-xl sm:rounded-3xl overflow-hidden shadow-2xl border border-gold/10 w-full max-w-[420px] sm:max-w-[520px] lg:max-w-full mx-auto">
+                                            <div className="aspect-[4/5] sm:aspect-square lg:aspect-[4/5] max-h-[65vh] relative overflow-hidden bg-white flex items-center justify-center">
                                                 {productImages.map((img, index) => (
                                                     <div
                                                         key={index}
-                                                        className={`absolute inset-0 transition-all duration-700 ease-in-out transform ${index === currentImageIndex ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full"
+                                                        className={`absolute inset-0 transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] transform ${index === currentImageIndex ? "opacity-100 scale-100" : "opacity-0 scale-95"
                                                             }`}
-                                                        style={{ transform: `translateX(${(index - currentImageIndex) * 100}%)` }}
                                                     >
                                                         <img
                                                             src={img}
                                                             alt={`${trustHighlights[currentImageIndex]?.label || 'WellForged Moringa Product'} - View ${index + 1}`}
                                                             loading={index === 0 ? "eager" : "lazy"}
-                                                            className="w-full h-full object-contain p-2 sm:p-3"
+                                                            className="w-full h-full object-contain p-4 sm:p-8"
                                                         />
                                                     </div>
                                                 ))}
@@ -179,7 +188,9 @@ const ProductPage = () => {
                                     </div>
                                 </ScrollReveal>
                                 <ScrollReveal animation="fade-up">
-                                    <div className="bg-card rounded-xl sm:rounded-2xl p-4 sm:p-5 lg:p-6 border border-border"><ProductSelector /></div>
+                                    <div className="bg-card rounded-xl sm:rounded-2xl p-4 sm:p-5 lg:p-6 border border-gold/10 shadow-gold group">
+                                        <ProductSelector />
+                                    </div>
                                 </ScrollReveal>
 
 
@@ -210,29 +221,38 @@ const ProductPage = () => {
                         <ScrollReveal animation="fade-up">
                             <div className="text-center mb-8 sm:mb-10 lg:mb-12">
                                 <span className="inline-block font-body text-[10px] sm:text-xs uppercase tracking-widest text-gold mb-2 sm:mb-3">Quality Reference</span>
-                                <h2 className="font-display font-semibold text-foreground mb-3 sm:mb-4" style={{ fontSize: "var(--text-3xl)" }}>Technical Specifications</h2>
+                                <h2 className="font-display font-semibold text-foreground mb-3 sm:mb-4 text-gold-gradient" style={{ fontSize: "var(--text-3xl)" }}>Technical Specifications</h2>
                                 <p className="font-body text-muted-foreground max-w-xl sm:max-w-2xl mx-auto px-2" style={{ fontSize: "var(--text-base)" }}>Complete transparency on our sourcing, testing protocols, and purity standards.</p>
                             </div>
                         </ScrollReveal>
-                        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
-                            {Object.values(technicalSpecs).map((spec, index) => (
-                                <ScrollReveal key={spec.title} animation="fade-up">
-                                    <div className={`bg-card rounded-xl sm:rounded-2xl p-4 sm:p-5 lg:p-6 border border-border h-full ${index === 2 ? 'sm:col-span-2 md:col-span-1' : ''}`}>
-                                        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 lg:mb-6">
-                                            <div className="h-10 w-10 sm:h-11 sm:w-11 lg:h-12 lg:w-12 bg-primary/10 rounded-lg sm:rounded-xl flex items-center justify-center"><spec.icon className="h-5 w-5 lg:h-6 lg:w-6 text-primary" /></div>
-                                            <h3 className="font-display text-base sm:text-lg lg:text-xl font-semibold text-foreground">{spec.title}</h3>
-                                        </div>
-                                        <ul className="space-y-2 sm:space-y-3">
-                                            {spec.details.map((detail, i) => (
-                                                <li key={i} className="flex justify-between items-center py-1.5 sm:py-2 border-b border-border/50 last:border-0">
-                                                    <span className="font-body text-xs sm:text-sm text-muted-foreground">{detail.label}</span>
-                                                    <span className="font-body text-xs sm:text-sm font-medium text-foreground text-right">{detail.value}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                </ScrollReveal>
-                            ))}
+                        <div className="max-w-4xl mx-auto">
+                            <Accordion type="single" collapsible className="space-y-4">
+                                {Object.values(technicalSpecs).map((spec, index) => (
+                                    <AccordionItem key={spec.title} value={`spec-${index}`} className="bg-card rounded-xl border border-border px-4 sm:px-6">
+                                        <AccordionTrigger className="hover:no-underline py-4 sm:py-6 group">
+                                            <div className="flex items-center gap-3 sm:gap-4 text-left">
+                                                <div className="h-10 w-10 sm:h-12 sm:w-12 bg-primary/10 rounded-xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                                                    <spec.icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-display text-base sm:text-lg lg:text-xl font-semibold text-foreground">{spec.title}</h3>
+                                                    <p className="font-body text-xs text-muted-foreground mt-0.5">Click to view detailed certifications and data</p>
+                                                </div>
+                                            </div>
+                                        </AccordionTrigger>
+                                        <AccordionContent className="pb-6">
+                                            <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-2 pt-2 border-t border-border/50">
+                                                {spec.details.map((detail, i) => (
+                                                    <li key={i} className="flex justify-between items-center py-2 border-b border-border/30 last:border-0 sm:last:border-b">
+                                                        <span className="font-body text-xs sm:text-sm text-muted-foreground">{detail.label}</span>
+                                                        <span className="font-body text-xs sm:text-sm font-semibold text-foreground text-right">{detail.value}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                ))}
+                            </Accordion>
                         </div>
                     </div>
                 </section>
@@ -278,16 +298,30 @@ const ProductPage = () => {
                     </div>
                 </section>
 
-                <section className="py-10 sm:py-14 lg:py-20 bg-primary/5 pb-24 sm:pb-14 lg:pb-20">
+                <section className="py-10 sm:py-14 lg:py-20 bg-primary/5 pb-24 sm:pb-14 lg:pb-20 relative overflow-hidden">
+                    {/* Process Animation Overlay */}
+                    <div className={`absolute inset-0 bg-primary z-50 flex items-center justify-center transition-all duration-700 pointer-events-none ${isTransitioning ? 'opacity-100 scale-100' : 'opacity-0 scale-110'}`}>
+                        <div className="text-center">
+                            <div className="mb-6 flex justify-center"><Shield className="h-16 w-16 text-primary-foreground animate-shield-pulse" /></div>
+                            <h2 className="font-display text-3xl font-bold text-primary-foreground mb-2">Accessing Transparency Forge</h2>
+                            <div className="w-48 h-1 bg-primary-foreground/20 rounded-full mx-auto overflow-hidden">
+                                <div className="h-full bg-primary-foreground animate-shimmer-sweep" />
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="max-w-4xl mx-auto px-3 sm:px-6 lg:px-8">
                         <ScrollReveal animation="scale">
                             <div className="text-center space-y-4 sm:space-y-6">
                                 <h2 className="font-display text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold text-foreground">Ready to Experience Clean Nutrition?</h2>
                                 <p className="font-body text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">Join thousands who trust WellForged for their daily wellness routine.</p>
                                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-                                    <Link to="/transparency" onClick={() => window.scrollTo(0, 0)}>
-                                        <Button variant="outline" size="default" className="w-full sm:w-auto">Learn About Our Process</Button>
-                                    </Link>
+                                    <button
+                                        onClick={handleProcessTransition}
+                                        className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full sm:w-auto"
+                                    >
+                                        Learn About Our Process
+                                    </button>
                                 </div>
                             </div>
                         </ScrollReveal>
