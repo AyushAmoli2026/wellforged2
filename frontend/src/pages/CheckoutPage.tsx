@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { CreditCard, Smartphone, Building2, Truck, Shield, CheckCircle, MapPin, Tag, X } from "lucide-react";
+import { CreditCard, Smartphone, Building2, Truck, Shield, CheckCircle, MapPin, Tag, X, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/context/CartContext";
@@ -238,8 +238,23 @@ const CheckoutPage = () => {
       <Navbar />
       <main className="min-h-screen bg-background pt-16 sm:pt-20 pb-8 sm:pb-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-6 sm:mb-8">
-            <h1 className="font-display font-semibold text-foreground" style={{ fontSize: "var(--text-3xl)" }}>Checkout</h1>
+          <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate(-1)}
+                className="h-10 w-10 flex items-center justify-center rounded-full hover:bg-muted border border-border transition-colors sm:hidden"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </button>
+              <h1 className="font-display font-semibold text-foreground" style={{ fontSize: "var(--text-3xl)" }}>Checkout</h1>
+            </div>
+
+            <button
+              onClick={() => navigate(-1)}
+              className="hidden sm:flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors font-body text-sm font-medium"
+            >
+              <ArrowLeft className="h-4 w-4" /> Back to Shop
+            </button>
           </div>
           {items.length === 0 ? (
             <div className="text-center py-16">
@@ -378,7 +393,17 @@ const CheckoutPage = () => {
                   <div className="space-y-3 mb-4 pb-4 border-b border-border">
                     {items.map((item) => (
                       <div key={item.id} className="flex gap-3">
-                        <img src={item.image} alt={item.name} className="w-14 h-14 object-contain bg-secondary rounded-lg" />
+                        <div className="w-14 h-14 bg-secondary rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
+                          <img
+                            src={item.image || "/Packaging_Updated.png"}
+                            alt={item.name}
+                            className="w-full h-full object-contain"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = "/Packaging_Updated.png";
+                            }}
+                          />
+                        </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-body text-sm font-medium text-foreground truncate">{item.name}</p>
                           <p className="font-body text-xs text-muted-foreground">Qty: {item.quantity}</p>

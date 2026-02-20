@@ -31,7 +31,17 @@ const CartDrawer = () => {
             <div className="flex-1 overflow-y-auto py-3 space-y-3">
               {items.map((item) => (
                 <div key={item.id} className="flex gap-3 p-3 bg-card rounded-xl border border-border">
-                  <img src={item.image} alt={item.name} className="w-16 h-16 object-contain bg-secondary rounded-lg" />
+                  <div className="w-16 h-16 bg-secondary rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
+                    <img
+                      src={item.image || "/Packaging_Updated.png"}
+                      alt={item.name}
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/Packaging_Updated.png";
+                      }}
+                    />
+                  </div>
                   <div className="flex-1">
                     <div className="flex justify-between items-start mb-1.5">
                       <div>

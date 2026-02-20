@@ -9,122 +9,102 @@ import homeLogo from "@/assets/Transparent_logo_WF.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { totalItems, setIsOpen: setCartOpen } = useCart();
-  const { isLoggedIn, logout } = useAuth();
-  const isSubPage = location.pathname !== "/" && location.pathname !== "";
+  const { isLoggedIn, user } = useAuth();
+
   const isHomePage = location.pathname === "/" || location.pathname === "";
   const currentLogo = isHomePage ? homeLogo : newLogo;
 
-  const allLinks = [
-    { name: "Home", href: "/" },
-    { name: "Shop", href: "/product" },
-  ];
-
-  const navLinks = allLinks.filter(link => {
-    if (location.pathname === "/" && link.href === "/") return false;
-    if (location.pathname === "/product" && link.href === "/product") return false;
-    if (location.pathname === "/transparency" && link.href === "/transparency") return false;
-    return true;
+  // Handle scroll effect
+  useState(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   });
 
+  const navLinks = isLoggedIn
+    ? [
+      { name: "Shop", href: "/product" },
+      { name: "Transparency", href: "/transparency" },
+      { name: "Profile", href: "/profile" },
+      { name: "Orders", href: "/profile#orders" },
+      { name: "Loyalty", href: "/profile#loyalty" },
+    ]
+    : [
+      { name: "Shop", href: "/product" },
+      { name: "Transparency", href: "/transparency" },
+    ];
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-12 sm:h-14 lg:h-16">
-          <div className="flex items-center gap-1.5 sm:gap-3">
-            {isSubPage && (
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${isScrolled
+        ? "bg-background/80 backdrop-blur-2xl border-border/50 py-2"
+        : "bg-transparent border-transparent py-4"
+        }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14 lg:h-16">
+
+          <div className="flex-1 flex items-center min-w-0">
+            {isLoggedIn ? (
+              <span className="font-display text-sm sm:text-base font-semibold text-foreground animate-fade-in truncate">
+                Welcome, {user?.first_name || "User"}
+              </span>
+            ) : !isHomePage && (
               <button
                 onClick={() => navigate(-1)}
-                className="h-11 w-11 transition-all duration-300 hover:-translate-x-1 flex items-center justify-center rounded-md hover:bg-muted"
+                className="h-10 w-10 lg:h-12 lg:w-12 flex items-center justify-center rounded-full hover:bg-muted border border-border transition-colors group"
+                aria-label="Go back"
               >
-                <ArrowLeft className="h-5 w-5" />
-              </button>
-            )}
-            <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center gap-2 group">
-              <img src={currentLogo} alt="WellForged" className={`object-contain ${isHomePage ? 'h-auto w-32 sm:w-40 lg:w-48' : 'h-8 sm:h-9 lg:h-10 w-auto'}`} />
-            </Link>
-          </div>
-          <div className="hidden md:flex items-center gap-6 lg:gap-10">
-            {navLinks.map((link) => (
-              <Link key={link.name} to={link.href} onClick={() => window.scrollTo(0, 0)} className="relative text-foreground/80 hover:text-foreground font-body text-sm lg:text-base tracking-wide transition-all duration-300 group">
-                {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
-              </Link>
-            ))}
-          </div>
-          <div className="hidden md:flex items-center gap-3">
-            <Link to="/transparency" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-primary/5 transition-colors group">
-              <Shield className="h-4 w-4 text-primary" />
-              <span className="font-body text-xs font-bold uppercase tracking-wider text-primary">Verify Batch</span>
-            </Link>
-            {isLoggedIn ? (
-              <>
-                <button onClick={() => setCartOpen(true)} className="relative p-3 hover:bg-muted rounded-full transition-colors" aria-label="Open cart">
-                  <ShoppingCart className="h-5 w-5 text-foreground" />
-                  {totalItems > 0 && (
-                    <span className="absolute top-1 right-1 h-5 w-5 bg-destructive text-destructive-foreground text-xs font-bold rounded-full flex items-center justify-center">
-                      {totalItems > 9 ? "9+" : totalItems}
-                    </span>
-                  )}
-                </button>
-                <Link to="/profile">
-                  <button className="relative p-3 hover:bg-muted rounded-full transition-colors" aria-label="My Account">
-                    <User className="h-5 w-5 text-foreground" />
-                  </button>
-                </Link>
-              </>
-            ) : (
-              <button onClick={() => navigate("/auth")} className="relative p-3 hover:bg-muted rounded-full transition-colors" aria-label="Login">
-                <LogIn className="h-5 w-5 text-foreground" />
+                <ArrowLeft className="h-5 w-5 lg:h-6 lg:w-6 text-foreground/70 group-hover:text-primary transition-colors" />
               </button>
             )}
           </div>
-          <div className="flex md:hidden items-center gap-1">
-            <Link to="/product" className="relative p-2.5 hover:bg-muted rounded-full transition-colors font-body text-sm font-semibold text-primary" aria-label="Shop">
-              Shop
-            </Link>
-            {isLoggedIn ? (
-              <>
-                <button onClick={() => setCartOpen(true)} className="relative p-3 hover:bg-muted rounded-full transition-colors" aria-label="Open cart">
-                  <ShoppingCart className="h-5 w-5 text-foreground" />
-                  {totalItems > 0 && (
-                    <span className="absolute top-1.5 right-1.5 h-4 w-4 bg-destructive text-destructive-foreground text-[10px] font-bold rounded-full flex-shrink-0 flex items-center justify-center">
-                      {totalItems > 9 ? "9+" : totalItems}
-                    </span>
-                  )}
-                </button>
-                <Link to="/profile">
-                  <button className="relative p-3 hover:bg-muted rounded-full transition-colors" aria-label="My Account">
-                    <User className="h-5 w-5 text-foreground" />
-                  </button>
-                </Link>
-              </>
-            ) : (
-              <button onClick={() => navigate("/auth")} className="relative p-3 hover:bg-muted rounded-full transition-colors" aria-label="Login">
-                <LogIn className="h-5 w-5 text-foreground" />
+
+          {/* RIGHT SECTION */}
+          <div className="flex items-center justify-end gap-2 sm:gap-4">
+            {!isLoggedIn && (
+              <button
+                onClick={() => navigate("/auth")}
+                className="p-2.5 hover:bg-muted rounded-full transition-all duration-300 group flex items-center gap-2"
+                aria-label="Login"
+              >
+                <LogIn className="h-4 w-4 text-foreground/80 group-hover:text-primary" />
+                <span className="hidden sm:inline font-body text-xs font-bold uppercase tracking-widest text-foreground/80 group-hover:text-primary">Login</span>
               </button>
             )}
-            <button className="p-3 transition-transform duration-300 hover:scale-110 h-11 w-11 flex items-center justify-center" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu">
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+
+            <button
+              className="p-2.5 hover:bg-muted rounded-full transition-all duration-300 flex items-center justify-center"
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X className="h-5 w-5 text-foreground" /> : <Menu className="h-5 w-5 text-foreground" />}
             </button>
           </div>
         </div>
-        <div className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-          <div className="py-3 sm:py-4 border-t border-border">
-            <div className="flex flex-col items-center gap-2 sm:gap-3 text-center">
-              {isSubPage && (
-                <button className="flex items-center justify-center gap-2 text-foreground/80 hover:text-foreground font-body text-base py-2 transition-all duration-300" onClick={() => { setIsOpen(false); navigate(-1); }}>
-                  <ArrowLeft className="h-4 w-4" /> Go Back
-                </button>
-              )}
-              {navLinks.map((link, index) => (
-                <Link key={link.name} to={link.href} className="text-foreground/80 hover:text-foreground font-body text-base py-2 transition-all duration-300" onClick={() => { setIsOpen(false); window.scrollTo(0, 0); }} style={{ transitionDelay: `${index * 50}ms` }}>
-                  {link.name}
-                </Link>
-              ))}
-            </div>
+
+        {/* MOBILE MENU: Sleek dropdown with Backdrop */}
+        {isOpen && <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[-1] md:hidden" onClick={() => setIsOpen(false)} />}
+        <div
+          className={`md:hidden absolute inset-x-0 top-[100%] bg-background/95 backdrop-blur-2xl border-b border-border shadow-2xl transition-all duration-300 ease-in-out ${isOpen ? 'opacity-100 translate-y-0 visible' : 'opacity-0 -translate-y-4 invisible pointer-events-none'
+            }`}
+        >
+          <div className="py-6 px-4 flex flex-col gap-4">
+            {navLinks.map((link, index) => (
+              <Link
+                key={link.name}
+                to={link.href}
+                className="text-lg font-display font-medium text-foreground py-2 px-4 rounded-lg hover:bg-muted transition-all duration-200 flex items-center justify-between group"
+                onClick={() => setIsOpen(false)}
+                style={{ transitionDelay: `${index * 30}ms` }}
+              >
+                {link.name}
+                <ArrowLeft className="h-4 w-4 rotate-180 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+              </Link>
+            ))}
           </div>
         </div>
       </div>

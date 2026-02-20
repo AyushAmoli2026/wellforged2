@@ -137,25 +137,6 @@ const ProductSelector = () => {
         )}
       </div>
 
-      {/* Trust Stacking - Uncertainty Reduction */}
-      <div className="pt-4 border-t border-border space-y-3">
-        <div className="flex items-center gap-2">
-          <div className="h-5 w-5 bg-primary/10 rounded-full flex items-center justify-center">
-            <Shield className="h-3 w-3 text-primary" />
-          </div>
-          <p className="font-body text-xs font-bold text-foreground uppercase tracking-widest">Transparency Guarantee</p>
-        </div>
-        <div className="grid grid-cols-1 gap-2">
-          <div className="flex items-center gap-2.5 px-3 py-2 bg-secondary/50 rounded-lg border border-border/50">
-            <Check className="h-4 w-4 text-primary" />
-            <span className="font-body text-xs text-muted-foreground">Verified Pure for Batch <span className="text-foreground font-bold">#WF2026</span></span>
-          </div>
-          <div className="flex items-center gap-2.5 px-3 py-2 bg-secondary/50 rounded-lg border border-border/50">
-            <FlaskConical className="h-4 w-4 text-primary" />
-            <span className="font-body text-xs text-muted-foreground">Certified <span className="text-foreground font-bold">Non-Detectable</span> Heavy Metals</span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

@@ -44,7 +44,7 @@ const ManifestoHero = () => {
 
         <div className="animate-hero-fade-up mb-4 sm:mb-6 lg:mb-8">
           <span className="inline-block font-body text-[10px] sm:text-xs lg:text-sm font-semibold uppercase tracking-[0.15em] text-primary bg-primary/5 border border-primary/10 px-4 py-2 rounded-full">
-            Radical Transparency in Wellness
+            The No - Nonsense Supplement Brand
           </span>
         </div>
 

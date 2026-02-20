@@ -47,19 +47,6 @@ const Footer = () => {
               ))}
             </ul>
           </div>
-          <div className="flex flex-col items-start lg:col-span-1">
-            <h4 className="font-display text-[10px] sm:text-xs font-semibold text-foreground uppercase tracking-wider mb-2 sm:mb-3">Transparency Guarantee</h4>
-            <div className="bg-primary/5 border border-primary/10 rounded-xl p-3 sm:p-4 mb-4">
-              <p className="font-body text-[10px] sm:text-xs text-muted-foreground leading-relaxed">
-                If your batch lab report doesn't match our online database, get a <span className="text-foreground font-bold italic">100% Instant Refund</span>. No questions asked.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <span className="px-2 py-1 bg-muted rounded text-[9px] font-mono text-muted-foreground uppercase">NABL Accredited</span>
-              <span className="px-2 py-1 bg-muted rounded text-[9px] font-mono text-muted-foreground uppercase">FSSAI Certified</span>
-              <span className="px-2 py-1 bg-muted rounded text-[9px] font-mono text-muted-foreground uppercase">ISO 22000</span>
-            </div>
-          </div>
         </div>
         <div className="border-t border-border mt-3 sm:mt-6 pt-3 sm:pt-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">

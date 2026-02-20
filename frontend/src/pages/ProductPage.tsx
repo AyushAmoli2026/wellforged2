@@ -111,7 +111,7 @@ const ProductPage = () => {
                 </script>
             </Helmet>
             <Navbar />
-            <main className="min-h-screen bg-background pt-12 sm:pt-14 lg:pt-16">
+            <main className="min-h-screen bg-background pt-24 sm:pt-28 lg:pt-32">
                 <section className="py-2 sm:py-4 lg:py-6">
                     <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
                         <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-12">
