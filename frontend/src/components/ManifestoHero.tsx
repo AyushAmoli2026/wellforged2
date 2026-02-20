@@ -19,7 +19,7 @@ const ManifestoHero = () => {
   }, []);
 
   return (
-    <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden pt-14 sm:pt-16 lg:pt-20">
+    <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden py-[var(--space-xl)]">
       <div className="absolute inset-0 animate-gradient-shift">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-primary/3" />
         <div className="absolute inset-0 bg-gradient-to-tl from-secondary/50 via-transparent to-primary/5 animate-gradient-reverse" />
@@ -28,27 +28,27 @@ const ManifestoHero = () => {
       <div className="hidden sm:block absolute bottom-20 right-10 w-64 md:w-96 h-64 md:h-96 rounded-full bg-gold/5 blur-3xl animate-float delay-300" />
 
       <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="flex justify-center mb-6 sm:mb-8 lg:mb-10">
+        <div className="flex justify-center mb-[var(--space-lg)]">
           <AnimatedLogo size="hero" className="animate-subtle-float" />
         </div>
 
         {/* Live Batch Status Pill - Uncertainty Reduction */}
-        <div className="animate-hero-fade-up mb-6">
+        <div className="animate-hero-fade-up mb-[var(--space-md)]">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-full shadow-sm animate-pulse-subtle">
             <Shield className="h-4 w-4 text-primary" />
-            <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.15em] text-primary font-bold">
+            <span className="font-mono text-[var(--text-xs)] lg:text-[var(--text-sm)] uppercase tracking-[0.15em] text-primary font-bold">
               Batch #WF2026: 100% Purity Verified
             </span>
           </div>
         </div>
 
-        <div className="animate-hero-fade-up mb-4 sm:mb-6 lg:mb-8">
-          <span className="inline-block font-body text-[10px] sm:text-xs lg:text-sm font-semibold uppercase tracking-[0.15em] text-primary bg-primary/5 border border-primary/10 px-4 py-2 rounded-full">
+        <div className="animate-hero-fade-up mb-[var(--space-sm)]">
+          <span className="inline-block font-body text-[var(--text-xs)] lg:text-[var(--text-sm)] font-semibold uppercase tracking-[0.15em] text-primary bg-primary/5 border border-primary/10 px-4 py-2 rounded-full">
             The No - Nonsense Supplement Brand
           </span>
         </div>
 
-        <h1 className="font-display font-semibold text-foreground leading-[1.1] sm:leading-[1.05] mb-6 sm:mb-8 lg:mb-10" style={{ fontSize: "var(--text-5xl)", textWrap: "balance" } as React.CSSProperties}>
+        <h1 className="font-display font-semibold text-foreground leading-[1.1] sm:leading-[1.05] mb-[var(--space-md)]" style={{ fontSize: "var(--text-6xl)", textWrap: "balance" } as React.CSSProperties}>
           {words.map((word, index) => (
             <span key={index} className={`inline-block transition-all duration-700 mr-[0.25em] last:mr-0 ${index < visibleWords ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${word === "Standard." ? "text-gold-gradient drop-shadow-sm" : ""}`} style={{ transitionDelay: `${index * 150}ms` }}>
               {word}
@@ -57,19 +57,19 @@ const ManifestoHero = () => {
         </h1>
 
         <div className="animate-hero-fade-up-delay-3 max-w-lg sm:max-w-xl lg:max-w-2xl mx-auto">
-          <p className="font-body text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed mb-10">
+          <p className="font-body text-[var(--text-base)] sm:text-[var(--text-lg)] text-muted-foreground leading-relaxed mb-[var(--space-lg)]">
             Most brands ask for your trust. <span className="text-foreground font-semibold">We provide the evidence.</span> Access third-party lab results for the specific bottle in your hand.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/product">
-              <Button variant="hero" size="xl" className="h-14 sm:h-16 px-8 sm:px-10 text-base sm:text-lg group">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-[var(--space-sm)]">
+            <Link to="/product" className="w-full sm:w-auto">
+              <Button variant="hero" size="xl" className="h-14 sm:h-16 px-8 sm:px-10 font-bold uppercase tracking-widest group w-full">
                 Shop the Evidence
                 <ArrowRight className="h-5 w-5 ml-2 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
-            <Link to="/transparency">
-              <Button variant="outline" size="xl" className="h-14 sm:h-16 px-8 sm:px-10 text-base sm:text-lg border-2">
+            <Link to="/transparency" className="w-full sm:w-auto">
+              <Button variant="outline" size="xl" className="h-14 sm:h-16 px-8 sm:px-10 font-bold uppercase tracking-widest border-2 w-full">
                 Verify Your Batch
               </Button>
             </Link>

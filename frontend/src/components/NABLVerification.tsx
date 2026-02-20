@@ -12,15 +12,15 @@ const NABLVerification = () => {
 
   return (
     <section className="section-padding bg-background">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <ScrollReveal>
-          <div className="text-center mb-8 sm:mb-10 lg:mb-14">
-            <span className="inline-block font-body text-[9px] sm:text-[10px] lg:text-xs uppercase tracking-[0.15em] sm:tracking-[0.2em] lg:tracking-[0.3em] text-primary/70 border border-primary/20 px-2.5 sm:px-3 lg:px-4 py-1 sm:py-1.5 lg:py-2 rounded-full mb-3 sm:mb-4 lg:mb-6">Lab Verified</span>
-            <h2 className="font-display text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold text-foreground mb-3 sm:mb-4 lg:mb-6">Independent NABL Verification</h2>
-            <p className="font-body text-sm sm:text-base lg:text-lg text-muted-foreground max-w-xl sm:max-w-2xl mx-auto leading-relaxed px-2">Every batch undergoes rigorous third-party testing at NABL-accredited laboratories. We don't just claim purity — we prove it.</p>
+          <div className="text-center mb-[var(--space-lg)] sm:mb-[var(--space-xl)]">
+            <span className="inline-block font-body text-[var(--text-xs)] lg:text-[var(--text-sm)] uppercase tracking-[0.2em] lg:tracking-[0.3em] text-primary/70 border border-primary/20 px-4 py-2 rounded-full mb-[var(--space-md)]">Lab Verified</span>
+            <h2 className="font-display font-semibold text-foreground mb-[var(--space-sm)]" style={{ fontSize: "var(--text-4xl)" }}>Independent NABL Verification</h2>
+            <p className="font-body text-[var(--text-base)] sm:text-[var(--text-lg)] text-muted-foreground max-w-xl sm:max-w-2xl mx-auto leading-relaxed px-2">Every batch undergoes rigorous third-party testing at NABL-accredited laboratories. We don't just claim purity — we prove it.</p>
           </div>
         </ScrollReveal>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mb-8 sm:mb-10 lg:mb-14">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-[var(--space-md)] mb-[var(--space-xl)]">
           {verificationCards.map((card, index) => (
             <ScrollReveal key={card.title} delay={index * 150}>
               <div className="relative group h-full">
@@ -30,12 +30,12 @@ const NABLVerification = () => {
                       <Shield className="h-2.5 w-2.5 sm:h-3 sm:w-3" />{card.status}
                     </span>
                   </div>
-                  <div className={`h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 rounded-lg sm:rounded-xl ${card.bgColor} flex items-center justify-center mb-3 sm:mb-4 transition-transform duration-300 group-hover:scale-110`}>
-                    <card.icon className={`h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 ${card.color}`} />
+                  <div className={`h-[var(--space-xl)] w-[var(--space-xl)] rounded-lg sm:rounded-xl ${card.bgColor} flex items-center justify-center mb-[var(--space-md)] transition-transform duration-300 group-hover:scale-110`}>
+                    <card.icon className="h-1/2 w-1/2" />
                   </div>
-                  <h3 className="font-display text-base sm:text-lg lg:text-xl font-semibold text-foreground mb-0.5 sm:mb-1">{card.title}</h3>
-                  <p className="font-body text-[10px] sm:text-xs text-muted-foreground mb-2 sm:mb-3">{card.subtitle}</p>
-                  <p className="font-body text-xs sm:text-sm text-muted-foreground leading-relaxed mt-auto">{card.description}</p>
+                  <h3 className="font-display font-semibold text-foreground mb-1" style={{ fontSize: "var(--text-xl)" }}>{card.title}</h3>
+                  <p className="font-body text-[var(--text-xs)] text-muted-foreground mb-3">{card.subtitle}</p>
+                  <p className="font-body text-[var(--text-sm)] text-muted-foreground leading-relaxed mt-auto">{card.description}</p>
                 </div>
               </div>
             </ScrollReveal>

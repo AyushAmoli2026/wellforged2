@@ -177,9 +177,9 @@ const TransparencyPage = () => {
   return (
     <>
       <Helmet><title>Transparency | WellForged</title><meta name="description" content="Validate your WellForged batch number to access verified third-party lab test results." /></Helmet>
-      <main className="min-h-screen bg-background flex flex-col">
-        <header className="border-b border-border bg-background/95 backdrop-blur-lg sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-3">
+      <main className="min-h-screen bg-background flex flex-col page-pt">
+        <header className="border-b border-border bg-background/95 backdrop-blur-lg fixed top-0 inset-x-0 z-50">
+          <div className="max-w-[1440px] mx-auto px-[var(--space-sm)] lg:px-[var(--space-md)] py-[var(--space-xs)] lg:py-[var(--space-sm)]">
             <div className="relative flex items-center justify-between">
               <Link to="/" onClick={() => window.scrollTo(0, 0)}><Button variant="ghost" size="icon" className="rounded-full"><ArrowLeft className="h-5 w-5" /></Button></Link>
 
@@ -193,19 +193,19 @@ const TransparencyPage = () => {
           </div>
         </header>
 
-        <section className="flex-1 flex items-center justify-center px-4 sm:px-6 py-2 sm:py-4 bg-gradient-to-b from-secondary via-secondary to-background">
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full mb-2 sm:mb-3 animate-fade-up"><Shield className="h-3 w-3 text-primary" /><span className="font-mono text-[10px] uppercase tracking-[0.15em] text-primary">Secure Verification</span></div>
-            <h1 className="font-display font-bold text-foreground mb-2 sm:mb-4 animate-fade-up delay-100" style={{ fontSize: "var(--text-4xl)" }}>Turn Skepticism Into Confidence</h1>
+        <section className="flex-1 flex items-center justify-center px-[var(--space-sm)] py-[var(--space-xl)] bg-gradient-to-b from-secondary via-secondary to-background">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full mb-[var(--space-xs)] animate-fade-up"><Shield className="h-3 w-3 text-primary" /><span className="font-mono text-[var(--text-xs)] uppercase tracking-[0.15em] text-primary">Secure Verification</span></div>
+            <h1 className="font-display font-bold text-foreground mb-[var(--space-md)] animate-fade-up delay-100" style={{ fontSize: "var(--text-5xl)" }}>Turn Skepticism Into Confidence</h1>
             <form onSubmit={handleSearch} className="max-w-xl mx-auto animate-fade-up delay-200">
               <div className="relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-gold/20 to-primary/20 rounded-2xl blur-lg opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
                 <div className="relative flex items-center">
-                  <div className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 text-muted-foreground"><Search className="h-4 w-4 sm:h-5 sm:w-5" /></div>
-                  <input type="text" placeholder="WF2026021212" value={batchNumber} onChange={(e) => setBatchNumber(e.target.value)} className="w-full h-12 sm:h-14 md:h-16 pl-10 sm:pl-12 pr-4 sm:pr-6 bg-card border-2 border-border text-foreground placeholder:text-muted-foreground rounded-xl font-body text-base sm:text-lg md:text-xl text-center transition-all duration-300 focus:outline-none focus:border-primary focus:shadow-[0_0_40px_-5px_hsl(var(--primary)/0.5)]" required />
+                  <div className="absolute left-[var(--space-sm)] top-1/2 -translate-y-1/2 text-muted-foreground"><Search className="h-5 w-5" /></div>
+                  <input type="text" placeholder="WF2026021212" value={batchNumber} onChange={(e) => setBatchNumber(e.target.value)} className="w-full h-[var(--space-2xl)] pl-[var(--space-xl)] pr-[var(--space-md)] bg-card border-2 border-border text-foreground placeholder:text-muted-foreground rounded-xl font-body text-[var(--text-xl)] text-center transition-all duration-300 focus:outline-none focus:border-primary focus:shadow-[0_0_40px_-5px_hsl(var(--primary)/0.5)]" required />
                 </div>
               </div>
-              <Button type="submit" disabled={isLoading} variant="hero" size="lg" className="mt-3 sm:mt-4 w-full sm:w-auto h-12 sm:h-14 px-8 text-sm sm:text-base gap-2">
+              <Button type="submit" disabled={isLoading} variant="hero" size="lg" className="mt-[var(--space-sm)] w-full sm:w-auto h-[var(--space-xl)] px-10 text-[var(--text-base)] font-bold uppercase tracking-widest gap-2">
                 {isLoading ? <><Loader2 className="h-5 w-5 animate-spin" />Verifying...</> : <><Shield className="h-5 w-5" />Transparency</>}
               </Button>
             </form>

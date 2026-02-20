@@ -111,10 +111,10 @@ const ProductPage = () => {
                 </script>
             </Helmet>
             <Navbar />
-            <main className="min-h-screen bg-background pt-24 sm:pt-28 lg:pt-32">
-                <section className="py-2 sm:py-4 lg:py-6">
-                    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-                        <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-12">
+            <main className="min-h-screen bg-background page-pt">
+                <section className="py-[var(--space-sm)]">
+                    <div className="max-w-[1440px] mx-auto px-[var(--space-sm)] lg:px-[var(--space-md)]">
+                        <div className="grid lg:grid-cols-2 gap-[var(--space-md)] lg:gap-[var(--space-xl)]">
                             <div className="lg:sticky lg:top-24 lg:self-start">
                                 <ScrollReveal animation="fade-right">
                                     <div className="relative group">
@@ -172,9 +172,9 @@ const ProductPage = () => {
                             </div>
                             <div className="space-y-4 sm:space-y-5 lg:space-y-6">
                                 <ScrollReveal animation="fade-left">
-                                    <div className="space-y-1 sm:space-y-2">
-                                        <h1 className="font-display font-semibold text-foreground leading-[1.1]" style={{ fontSize: "var(--text-3xl)" }}>WellForged – Moringa Powder</h1>
-                                        <p className="font-body text-muted-foreground leading-relaxed" style={{ fontSize: "var(--text-sm)" }}>Pure, nutrient-rich moringa powder—lab tested, no fillers, nothing hidden. Just nature's most powerful green, delivered fresh.</p>
+                                    <div className="space-y-[var(--space-xs)]">
+                                        <h1 className="font-display font-semibold text-foreground leading-[1.1]" style={{ fontSize: "var(--text-4xl)" }}>WellForged – Moringa Powder</h1>
+                                        <p className="font-body text-muted-foreground leading-relaxed" style={{ fontSize: "var(--text-base)" }}>Pure, nutrient-rich moringa powder—lab tested, no fillers, nothing hidden. Just nature's most powerful green, delivered fresh.</p>
                                     </div>
                                 </ScrollReveal>
                                 <ScrollReveal animation="fade-up">
@@ -196,10 +196,10 @@ const ProductPage = () => {
 
                             </div>
                         </div>
-                        <div className="mt-6 sm:mt-10 lg:mt-12">
+                        <div className="mt-[var(--space-lg)] sm:mt-[var(--space-xl)]">
                             <ScrollReveal animation="fade-up">
-                                <div className="space-y-3 sm:space-y-5">
-                                    <h2 className="font-display font-semibold text-foreground text-center" style={{ fontSize: "var(--text-2xl)" }}>Ingredient Profile</h2>
+                                <div className="space-y-[var(--space-sm)] sm:space-y-[var(--space-md)]">
+                                    <h2 className="font-display font-semibold text-foreground text-center" style={{ fontSize: "var(--text-3xl)" }}>Ingredient Profile</h2>
                                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
                                         {ingredients.map(({ icon: Icon, name, description }) => (
                                             <div key={name} className="flex flex-col items-center text-center gap-2 sm:gap-3 p-3 sm:p-4 bg-primary/5 rounded-xl border border-primary/10 transition-all duration-200 hover:bg-primary/10 h-full">
@@ -219,10 +219,10 @@ const ProductPage = () => {
                 <section className="py-10 sm:py-14 lg:py-20 bg-secondary/30">
                     <div className="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8">
                         <ScrollReveal animation="fade-up">
-                            <div className="text-center mb-8 sm:mb-10 lg:mb-12">
-                                <span className="inline-block font-body text-[10px] sm:text-xs uppercase tracking-widest text-gold mb-2 sm:mb-3">Quality Reference</span>
-                                <h2 className="font-display font-semibold text-foreground mb-3 sm:mb-4 text-gold-gradient" style={{ fontSize: "var(--text-3xl)" }}>Technical Specifications</h2>
-                                <p className="font-body text-muted-foreground max-w-xl sm:max-w-2xl mx-auto px-2" style={{ fontSize: "var(--text-base)" }}>Complete transparency on our sourcing, testing protocols, and purity standards.</p>
+                            <div className="text-center mb-[var(--space-lg)] sm:mb-[var(--space-xl)]">
+                                <span className="inline-block font-body text-[var(--text-xs)] uppercase tracking-widest text-gold mb-[var(--space-2xs)]">Quality Reference</span>
+                                <h2 className="font-display font-semibold text-foreground mb-[var(--space-xs)] text-gold-gradient" style={{ fontSize: "var(--text-4xl)" }}>Technical Specifications</h2>
+                                <p className="font-body text-muted-foreground max-w-xl sm:max-w-2xl mx-auto px-2" style={{ fontSize: "var(--text-lg)" }}>Complete transparency on our sourcing, testing protocols, and purity standards.</p>
                             </div>
                         </ScrollReveal>
                         <div className="max-w-4xl mx-auto">

@@ -12,16 +12,16 @@ const CartDrawer = () => {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetContent side="right" className="w-full sm:max-w-md flex flex-col bg-background">
-        <SheetHeader className="border-b border-border pb-3">
-          <SheetTitle className="flex items-center gap-2 font-display" style={{ fontSize: "var(--text-xl)" }}><ShoppingBag className="h-5 w-5" />Your Cart ({totalItems})</SheetTitle>
+        <SheetHeader className="border-b border-border pb-[var(--space-sm)]">
+          <SheetTitle className="flex items-center gap-2 font-display uppercase tracking-widest" style={{ fontSize: "var(--text-lg)" }}><ShoppingBag className="h-5 w-5" />Your Cart ({totalItems})</SheetTitle>
         </SheetHeader>
         {totalItems === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center py-12 px-6 text-center">
-            <ShoppingBag className="h-16 w-16 text-muted-foreground/30 mb-4" />
-            <p className="font-display text-xl font-bold text-foreground mb-2">Your cart is empty</p>
-            <p className="font-body text-sm text-muted-foreground mb-8">Add some clean nutrition to your routine to get started.</p>
+          <div className="flex-1 flex flex-col items-center justify-center py-[var(--space-2xl)] px-[var(--space-md)] text-center">
+            <ShoppingBag className="h-[var(--space-3xl)] w-[var(--space-3xl)] text-muted-foreground/30 mb-[var(--space-md)]" />
+            <p className="font-display text-[var(--text-2xl)] font-bold text-foreground mb-[var(--space-xs)]">Your cart is empty</p>
+            <p className="font-body text-[var(--text-base)] text-muted-foreground mb-[var(--space-xl)]">Add some clean nutrition to your routine to get started.</p>
             <Link to="/product" className="w-full" onClick={() => setIsOpen(false)}>
-              <Button variant="hero" size="lg" className="w-full gap-2 h-12">
+              <Button variant="hero" size="lg" className="w-full gap-2 h-[var(--space-xl)] font-bold uppercase tracking-widest">
                 Shop Now <ArrowRight className="h-5 w-5" />
               </Button>
             </Link>
@@ -65,12 +65,12 @@ const CartDrawer = () => {
                 </div>
               ))}
             </div>
-            <div className="border-t border-border pt-3 space-y-2">
-              <div className="flex justify-between font-display text-base sm:text-lg font-semibold pt-2"><span>Total</span><span>₹{total.toLocaleString()}</span></div>
+            <div className="border-t border-border pt-[var(--space-sm)] space-y-[var(--space-sm)] pb-[var(--space-md)]">
+              <div className="flex justify-between font-display uppercase tracking-widest font-semibold pt-[var(--space-2xs)]" style={{ fontSize: "var(--text-base)" }}><span>Total</span><span>₹{total.toLocaleString()}</span></div>
               <Link to="/checkout" onClick={() => setIsOpen(false)}>
-                <Button variant="hero" size="lg" className="w-full mt-3 gap-2 h-12">Proceed to Checkout<ArrowRight className="h-5 w-5" /></Button>
+                <Button variant="hero" size="lg" className="w-full gap-2 h-[var(--space-xl)] font-bold uppercase tracking-widest">Proceed to Checkout<ArrowRight className="h-5 w-5" /></Button>
               </Link>
-              <button onClick={() => setIsOpen(false)} className="w-full text-center font-body text-sm text-muted-foreground hover:text-foreground transition-colors py-3">Continue Shopping</button>
+              <button onClick={() => setIsOpen(false)} className="w-full text-center font-body text-[var(--text-sm)] text-muted-foreground hover:text-foreground transition-colors uppercase tracking-[0.1em]">Continue Shopping</button>
             </div>
           </>
         )}

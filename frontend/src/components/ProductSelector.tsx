@@ -78,10 +78,10 @@ const ProductSelector = () => {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-5">
-      <div className="space-y-2">
-        <label className="font-body text-sm font-medium text-foreground">Select Size</label>
-        <div className="grid grid-cols-2 gap-2 sm:gap-3">
+    <div className="space-y-[var(--space-md)]">
+      <div className="space-y-[var(--space-xs)]">
+        <label className="font-body text-[var(--text-sm)] font-medium text-foreground uppercase tracking-widest">Select Size</label>
+        <div className="grid grid-cols-2 gap-[var(--space-xs)]">
           {skus.map((sku) => (
             <button
               key={sku.id}
@@ -116,11 +116,11 @@ const ProductSelector = () => {
           ))}
         </div>
       </div>
-      <div className="space-y-3">
+      <div className="space-y-[var(--space-xs)]">
         <Button
           variant="hero"
           size="xl"
-          className="w-full h-11 sm:h-12 gap-2 text-sm"
+          className="w-full h-[var(--space-xl)] gap-2 text-[var(--text-base)] font-bold uppercase tracking-widest"
           onClick={handleAddToCart}
           disabled={selectedSku.stock === 0}
         >
@@ -131,7 +131,7 @@ const ProductSelector = () => {
           )}
         </Button>
         {totalItems > 0 && (
-          <Button variant="outline" size="xl" className="w-full h-11 sm:h-12 gap-2 text-sm hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all duration-300" onClick={() => setIsOpen(true)}>
+          <Button variant="outline" size="xl" className="w-full h-[var(--space-xl)] gap-2 text-[var(--text-base)] font-bold uppercase tracking-widest hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all duration-300" onClick={() => setIsOpen(true)}>
             <ShoppingBag className="h-4 w-4" /> Go to Cart ({totalItems})
           </Button>
         )}

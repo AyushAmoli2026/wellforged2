@@ -70,17 +70,30 @@
     --font-display: 'Playfair Display', serif;
     --font-body: 'Inter', sans-serif;
 
-    /* Fluid Typography - Base scale at 320px to 1280px */
+    /* Fluid Typography - Precision scale at 320px to 1920px */
     --text-xs: clamp(0.65rem, 0.05vw + 0.6rem, 0.75rem);
     --text-sm: clamp(0.75rem, 0.1vw + 0.7rem, 0.875rem);
-    --text-base: clamp(0.875rem, 0.15vw + 0.8rem, 1rem);
-    --text-lg: clamp(1rem, 0.2vw + 0.95rem, 1.125rem);
-    --text-xl: clamp(1.125rem, 0.3vw + 1rem, 1.25rem);
-    --text-2xl: clamp(1.25rem, 0.5vw + 1.1rem, 1.5rem);
-    --text-3xl: clamp(1.5rem, 0.8vw + 1.3rem, 2rem);
-    --text-4xl: clamp(2rem, 1.2vw + 1.6rem, 2.5rem);
-    --text-5xl: clamp(2.5rem, 2vw + 1.8rem, 3.5rem);
-    --text-6xl: clamp(3rem, 3vw + 2rem, 5rem);
+    --text-base: clamp(0.875rem, 0.2vw + 0.8rem, 1.125rem);
+    --text-lg: clamp(1rem, 0.3vw + 0.95rem, 1.25rem);
+    --text-xl: clamp(1.125rem, 0.5vw + 1rem, 1.5rem);
+    --text-2xl: clamp(1.25rem, 0.8vw + 1.1rem, 2rem);
+    --text-3xl: clamp(1.5rem, 1.5vw + 1.2rem, 3rem);
+    --text-4xl: clamp(2rem, 2.5vw + 1.5rem, 4rem);
+    --text-5xl: clamp(2.5rem, 3.5vw + 1.8rem, 5.5rem);
+    --text-6xl: clamp(3rem, 5vw + 2rem, 8rem);
+
+    /* Fluid Spacing - Precision scale at 320px to 1920px */
+    --space-2xs: clamp(0.25rem, 0.1vw + 0.2rem, 0.375rem);
+    --space-xs: clamp(0.5rem, 0.2vw + 0.4rem, 0.75rem);
+    --space-sm: clamp(0.75rem, 0.4vw + 0.6rem, 1rem);
+    --space-md: clamp(1rem, 0.8vw + 0.8rem, 1.5rem);
+    --space-lg: clamp(1.5rem, 1.5vw + 1.2rem, 2.5rem);
+    --space-xl: clamp(2rem, 3vw + 1.5rem, 4rem);
+    --space-2xl: clamp(3rem, 5vw + 2rem, 6rem);
+    --space-3xl: clamp(4rem, 8vw + 2rem, 10rem);
+
+    /* Navbar Height - Accounts for padding + dynamic height */
+    --nav-height: clamp(5.5rem, 1vw + 5.25rem, 6rem);
   }
 
   .dark {
@@ -729,6 +742,10 @@
     100% {
       opacity: 0;
     }
+  }
+
+  .page-pt {
+    padding-top: var(--nav-height);
   }
 
   .animate-shield-pulse {

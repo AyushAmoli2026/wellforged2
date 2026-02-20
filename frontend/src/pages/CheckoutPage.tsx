@@ -236,7 +236,7 @@ const CheckoutPage = () => {
     <>
       <Helmet><title>Checkout | WellForged</title></Helmet>
       <Navbar />
-      <main className="min-h-screen bg-background pt-16 sm:pt-20 pb-8 sm:pb-12">
+      <main className="min-h-screen bg-background page-pt pb-[var(--space-xl)]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
@@ -246,7 +246,7 @@ const CheckoutPage = () => {
               >
                 <ArrowLeft className="h-5 w-5" />
               </button>
-              <h1 className="font-display font-semibold text-foreground" style={{ fontSize: "var(--text-3xl)" }}>Checkout</h1>
+              <h1 className="font-display font-semibold text-foreground uppercase tracking-widest" style={{ fontSize: "var(--text-3xl)" }}>Checkout</h1>
             </div>
 
             <button
@@ -270,7 +270,7 @@ const CheckoutPage = () => {
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-2">
                         <MapPin className="h-5 w-5 text-primary" />
-                        <h2 className="font-display font-semibold text-foreground" style={{ fontSize: "var(--text-lg)" }}>Shipping Details</h2>
+                        <h2 className="font-display font-semibold text-foreground uppercase tracking-wider" style={{ fontSize: "var(--text-base)" }}>Shipping Details</h2>
                       </div>
                       {savedAddresses.length > 0 && !isAddingNewAddress && (
                         <Button variant="outline" size="sm" onClick={() => setIsAddingNewAddress(true)} className="h-8 text-xs">
@@ -306,35 +306,35 @@ const CheckoutPage = () => {
                     ) : (
                       <div className="space-y-4">
                         <div>
-                          <label className="font-body text-sm font-medium text-foreground mb-1.5 block">Full Name *</label>
-                          <Input name="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="Enter your full name" className="h-11 sm:h-12" />
+                          <label className="font-body text-[var(--text-xs)] font-bold uppercase tracking-widest text-foreground mb-1.5 block">Full Name *</label>
+                          <Input name="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="Enter your full name" className="h-[var(--space-xl)]" />
                         </div>
                         <div>
-                          <label className="font-body text-sm font-medium text-foreground mb-1.5 block">Phone Number *</label>
-                          <Input name="phone" type="tel" value={formData.phone} onChange={handleInputChange} placeholder="+91 98765 43210" className="h-11 sm:h-12" readOnly={user?.mobile_number ? true : false} />
+                          <label className="font-body text-[var(--text-xs)] font-bold uppercase tracking-widest text-foreground mb-1.5 block">Phone Number *</label>
+                          <Input name="phone" type="tel" value={formData.phone} onChange={handleInputChange} placeholder="+91 98765 43210" className="h-[var(--space-xl)]" readOnly={user?.mobile_number ? true : false} />
                         </div>
                         <div>
-                          <label className="font-body text-sm font-medium text-foreground mb-1.5 block">Address *</label>
-                          <Input name="address" value={formData.address} onChange={handleInputChange} placeholder="House/Flat No., Street, Locality" className="h-11 sm:h-12" />
+                          <label className="font-body text-[var(--text-xs)] font-bold uppercase tracking-widest text-foreground mb-1.5 block">Address *</label>
+                          <Input name="address" value={formData.address} onChange={handleInputChange} placeholder="House/Flat No., Street, Locality" className="h-[var(--space-xl)]" />
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <label className="font-body text-sm font-medium text-foreground mb-1.5 block">Pincode *</label>
-                            <Input name="pincode" value={formData.pincode} onChange={handleInputChange} placeholder="400001" className="h-11 sm:h-12" />
+                            <label className="font-body text-[var(--text-xs)] font-bold uppercase tracking-widest text-foreground mb-1.5 block">Pincode *</label>
+                            <Input name="pincode" value={formData.pincode} onChange={handleInputChange} placeholder="400001" className="h-[var(--space-xl)]" />
                           </div>
                           <div>
-                            <label className="font-body text-sm font-medium text-foreground mb-1.5 block">City *</label>
-                            <Input name="city" value={formData.city} onChange={handleInputChange} placeholder="Mumbai" className="h-11 sm:h-12" />
+                            <label className="font-body text-[var(--text-xs)] font-bold uppercase tracking-widest text-foreground mb-1.5 block">City *</label>
+                            <Input name="city" value={formData.city} onChange={handleInputChange} placeholder="Mumbai" className="h-[var(--space-xl)]" />
                           </div>
                         </div>
                         <div>
-                          <label className="font-body text-sm font-medium text-foreground mb-1.5 block">State *</label>
-                          <Input name="state" value={formData.state} onChange={handleInputChange} placeholder="Maharashtra" className="h-11 sm:h-12" />
+                          <label className="font-body text-[var(--text-xs)] font-bold uppercase tracking-widest text-foreground mb-1.5 block">State *</label>
+                          <Input name="state" value={formData.state} onChange={handleInputChange} placeholder="Maharashtra" className="h-[var(--space-xl)]" />
                         </div>
                       </div>
                     )}
 
-                    <Button variant="hero" size="xl" className="w-full h-12 sm:h-14 mt-6" onClick={handleContinue}>
+                    <Button variant="hero" size="xl" className="w-full h-[var(--space-xl)] mt-6 font-bold uppercase tracking-widest" onClick={handleContinue}>
                       Continue to Payment
                     </Button>
                   </div>
