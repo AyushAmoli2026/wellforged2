@@ -66,7 +66,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const syncCartWithBackend = async () => {
     setIsLoading(true);
     try {
-      // 1. Get current backend cart
+      // 1. Get current backend cart (new schema returns { items: [...] })
       const response = await fetch(`${API_BASE_URL}/api/cart`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
@@ -78,11 +78,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         let itemsToMerge = items;
 
         if (localCart && items.length === 0) {
-          itemsToMerge = JSON.parse(localCart);
+          try {
+            itemsToMerge = JSON.parse(localCart);
+          } catch (e) {
+            itemsToMerge = [];
+          }
         }
 
         if (itemsToMerge.length > 0) {
-          const bulkItems = itemsToMerge.map(item => ({ product_id: item.id, quantity: item.quantity }));
+          const bulkItems = itemsToMerge.map(item => ({ sku_id: item.id, quantity: item.quantity }));
           await fetch(`${API_BASE_URL}/api/cart/bulk-add`, {
             method: "POST",
             headers: {
@@ -112,14 +116,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const updateItemsFromBackend = (backendItems: any[]) => {
+  const updateItemsFromBackend = (backendItems: any[] = []) => {
     const formattedItems: CartItem[] = backendItems.map(item => ({
-      id: item.product_id,
+      id: item.sku_id,
       name: item.name,
-      size: item.name.split("-").pop()?.trim() || "Unit",
-      price: parseFloat(item.price),
+      size: item.label || "Unit",
+      price: parseFloat(item.price), // Backend Rupees (string/decimal) -> Frontend Rupees (number)
       quantity: item.quantity,
-      image: item.image_url || "" // Handle missing images
+      image: item.image_url || ""
     }));
     setItems(formattedItems);
   };
@@ -155,7 +159,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
           },
-          body: JSON.stringify({ product_id: newItem.id, quantity })
+          body: JSON.stringify({ sku_id: newItem.id, quantity })
         });
       } catch (error) {
         console.error("Failed to add item to backend cart:", error);
@@ -179,13 +183,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         if (currentItem) {
           const diff = quantity - currentItem.quantity;
           if (diff !== 0) {
-            await fetch("http://localhost:5000/api/cart/add", {
+            await fetch(`${API_BASE_URL}/api/cart/add`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
               },
-              body: JSON.stringify({ product_id: id, quantity: diff })
+              body: JSON.stringify({ sku_id: id, quantity: diff })
             });
           }
         }
@@ -200,7 +204,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     if (isLoggedIn && token) {
       try {
-        await fetch(`${API_BASE_URL}/api/cart/product/${id}`, {
+        await fetch(`${API_BASE_URL}/api/cart/item/${id}`, {
           method: "DELETE",
           headers: { "Authorization": `Bearer ${token}` }
         });

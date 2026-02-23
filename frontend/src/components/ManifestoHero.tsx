@@ -32,15 +32,7 @@ const ManifestoHero = () => {
           <AnimatedLogo size="hero" className="animate-subtle-float" />
         </div>
 
-        {/* Live Batch Status Pill - Uncertainty Reduction */}
-        <div className="animate-hero-fade-up mb-[var(--space-md)]">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-full shadow-sm animate-pulse-subtle">
-            <Shield className="h-4 w-4 text-primary" />
-            <span className="font-mono text-[var(--text-xs)] lg:text-[var(--text-sm)] uppercase tracking-[0.15em] text-primary font-bold">
-              Batch #WF2026: 100% Purity Verified
-            </span>
-          </div>
-        </div>
+
 
         <div className="animate-hero-fade-up mb-[var(--space-sm)]">
           <span className="inline-block font-body text-[var(--text-xs)] lg:text-[var(--text-sm)] font-semibold uppercase tracking-[0.15em] text-primary bg-primary/5 border border-primary/10 px-4 py-2 rounded-full">

@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, ArrowLeft, ShoppingCart, LogIn, LogOut, User, Shield } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useCart } from "@/context/CartContext";
+import { Menu, X, ArrowLeft, LogIn, LogOut, User, ShoppingBag, FlaskConical, ClipboardList } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import newLogo from "@/assets/Transparent_logo.png";
 import homeLogo from "@/assets/Transparent_logo_WF.png";
@@ -12,12 +10,10 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { isLoggedIn, user } = useAuth();
+  const { isLoggedIn, user, logout } = useAuth();
 
   const isHomePage = location.pathname === "/" || location.pathname === "";
-  const currentLogo = isHomePage ? homeLogo : newLogo;
 
-  // Handle scroll effect
   useState(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
@@ -26,16 +22,15 @@ const Navbar = () => {
 
   const navLinks = isLoggedIn
     ? [
-      { name: "Shop", href: "/product" },
-      { name: "Transparency", href: "/transparency" },
-      { name: "Profile", href: "/profile" },
-      { name: "Orders", href: "/profile#orders" },
-      { name: "Loyalty", href: "/profile#loyalty" },
+      { name: "Profile", href: "/profile", icon: User },
+      { name: "Orders", href: "/profile#orders", icon: ClipboardList },
     ]
     : [
-      { name: "Shop", href: "/product" },
-      { name: "Transparency", href: "/transparency" },
+      { name: "Shop", href: "/product", icon: ShoppingBag },
+      { name: "Transparency", href: "/transparency", icon: FlaskConical },
     ];
+
+  const close = () => setIsOpen(false);
 
   return (
     <nav
@@ -48,11 +43,13 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-14 lg:h-16">
 
           <div className="flex-1 flex items-center min-w-0">
-            {isLoggedIn ? (
-              <span className="font-display text-sm sm:text-base font-semibold text-foreground animate-fade-in truncate">
-                Welcome, {user?.first_name || "User"}
-              </span>
-            ) : !isHomePage && (
+            {isHomePage ? (
+              isLoggedIn && (
+                <span className="font-display text-sm sm:text-base font-semibold text-foreground animate-fade-in truncate">
+                  Welcome, {user?.first_name || "User"}
+                </span>
+              )
+            ) : (
               <button
                 onClick={() => navigate(-1)}
                 className="h-10 w-10 lg:h-12 lg:w-12 flex items-center justify-center rounded-full hover:bg-muted border border-border transition-colors group"
@@ -77,34 +74,68 @@ const Navbar = () => {
             )}
 
             <button
-              className="p-2.5 hover:bg-muted rounded-full transition-all duration-300 flex items-center justify-center"
+              className="relative p-2.5 hover:bg-muted rounded-full transition-all duration-300 flex items-center justify-center"
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
             >
-              {isOpen ? <X className="h-5 w-5 text-foreground" /> : <Menu className="h-5 w-5 text-foreground" />}
+              <Menu className={`h-5 w-5 text-foreground transition-all duration-200 ${isOpen ? "opacity-0 rotate-90 scale-75" : "opacity-100 rotate-0 scale-100"}`} />
+              <X className={`h-5 w-5 text-foreground absolute transition-all duration-200 ${isOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-75"}`} />
             </button>
           </div>
         </div>
+      </div>
 
-        {/* MOBILE MENU: Sleek dropdown with Backdrop */}
-        {isOpen && <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[-1] md:hidden" onClick={() => setIsOpen(false)} />}
+      {/* ─── MOBILE MENU — Compact floating card ──────────────────────── */}
+      {/* Invisible backdrop to close */}
+      {isOpen && (
+        <div className="fixed inset-0 z-40 md:hidden" onClick={close} />
+      )}
+
+      {/* Floating dropdown card */}
+      <div
+        className={`md:hidden absolute right-4 top-[calc(100%+8px)] z-50 transition-all duration-200 origin-top-right ${isOpen
+          ? "opacity-100 scale-100 translate-y-0"
+          : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
+          }`}
+      >
         <div
-          className={`md:hidden absolute inset-x-0 top-[100%] bg-background/95 backdrop-blur-2xl border-b border-border shadow-2xl transition-all duration-300 ease-in-out ${isOpen ? 'opacity-100 translate-y-0 visible' : 'opacity-0 -translate-y-4 invisible pointer-events-none'
-            }`}
+          className="rounded-2xl overflow-hidden shadow-2xl border border-white/10"
+          style={{ background: "linear-gradient(160deg, #1c3529 0%, #122319 100%)", minWidth: "180px" }}
         >
-          <div className="py-6 px-4 flex flex-col gap-4">
-            {navLinks.map((link, index) => (
+          {/* Links */}
+          <div className="py-2">
+            {navLinks.map(({ name, href, icon: Icon }) => (
               <Link
-                key={link.name}
-                to={link.href}
-                className="text-lg font-display font-medium text-foreground py-2 px-4 rounded-lg hover:bg-muted transition-all duration-200 flex items-center justify-between group"
-                onClick={() => setIsOpen(false)}
-                style={{ transitionDelay: `${index * 30}ms` }}
+                key={name}
+                to={href}
+                onClick={close}
+                className="flex items-center gap-3 px-4 py-3 text-white/65 hover:text-white hover:bg-white/8 transition-all group"
               >
-                {link.name}
-                <ArrowLeft className="h-4 w-4 rotate-180 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
+                <Icon className="h-4 w-4 text-emerald-400/80 group-hover:text-emerald-300 flex-shrink-0 transition-colors" />
+                <span className="font-display font-semibold text-sm tracking-wide">{name}</span>
               </Link>
             ))}
+          </div>
+
+          {/* Divider + auth action */}
+          <div className="border-t border-white/8 px-3 py-2.5">
+            {isLoggedIn ? (
+              <button
+                onClick={() => { logout?.(); close(); }}
+                className="w-full flex items-center gap-3 px-2 py-2 rounded-xl text-white/40 hover:text-white/70 transition-all text-left"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                <span className="font-display text-xs tracking-wide">Sign Out</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => { navigate("/auth"); close(); }}
+                className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-white font-display font-bold text-xs tracking-wider transition-all hover:opacity-90"
+                style={{ background: "linear-gradient(135deg, #2a6349, #1e4d36)" }}
+              >
+                <LogIn className="h-3.5 w-3.5" /> Sign In
+              </button>
+            )}
           </div>
         </div>
       </div>

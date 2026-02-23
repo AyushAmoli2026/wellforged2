@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { CreditCard, Smartphone, Building2, Truck, Shield, CheckCircle, MapPin, Tag, X, ArrowLeft } from "lucide-react";
+import { CreditCard, Smartphone, Building2, Truck, Shield, CheckCircle, MapPin, Tag, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/context/CartContext";
@@ -238,24 +238,6 @@ const CheckoutPage = () => {
       <Navbar />
       <main className="min-h-screen bg-background page-pt pb-[var(--space-xl)]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => navigate(-1)}
-                className="h-10 w-10 flex items-center justify-center rounded-full hover:bg-muted border border-border transition-colors sm:hidden"
-              >
-                <ArrowLeft className="h-5 w-5" />
-              </button>
-              <h1 className="font-display font-semibold text-foreground uppercase tracking-widest" style={{ fontSize: "var(--text-3xl)" }}>Checkout</h1>
-            </div>
-
-            <button
-              onClick={() => navigate(-1)}
-              className="hidden sm:flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors font-body text-sm font-medium"
-            >
-              <ArrowLeft className="h-4 w-4" /> Back to Shop
-            </button>
-          </div>
           {items.length === 0 ? (
             <div className="text-center py-16">
               <p className="font-body text-lg text-muted-foreground mb-4">Your cart is empty</p>
@@ -392,8 +374,8 @@ const CheckoutPage = () => {
                   <h2 className="font-display font-semibold text-foreground mb-4" style={{ fontSize: "var(--text-lg)" }}>Order Summary</h2>
                   <div className="space-y-3 mb-4 pb-4 border-b border-border">
                     {items.map((item) => (
-                      <div key={item.id} className="flex gap-3">
-                        <div className="w-14 h-14 bg-secondary rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
+                      <div key={item.id} className="flex items-center gap-4 group">
+                        <div className="w-16 h-16 bg-muted rounded-xl overflow-hidden flex-shrink-0 border border-border group-hover:border-primary/30 transition-colors flex items-center justify-center p-2">
                           <img
                             src={item.image || "/Packaging_Updated.png"}
                             alt={item.name}
@@ -405,10 +387,15 @@ const CheckoutPage = () => {
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-body text-sm font-medium text-foreground truncate">{item.name}</p>
-                          <p className="font-body text-xs text-muted-foreground">Qty: {item.quantity}</p>
+                          <p className="font-body text-sm font-semibold text-foreground leading-tight mb-1">{item.name}</p>
+                          <div className="flex items-center gap-2">
+                            <span className="px-2 py-0.5 bg-secondary text-secondary-foreground text-[10px] font-bold rounded-md uppercase tracking-wider">Qty: {item.quantity}</span>
+                            {item.size && <span className="px-2 py-0.5 bg-primary/5 text-primary text-[10px] font-bold rounded-md uppercase tracking-wider">{item.size}</span>}
+                          </div>
                         </div>
-                        <p className="font-display text-sm font-semibold text-foreground">₹{(item.price * item.quantity).toLocaleString()}</p>
+                        <div className="text-right flex-shrink-0 ml-2">
+                          <p className="font-display text-sm font-bold text-foreground">₹{(item.price * item.quantity).toLocaleString()}</p>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -454,25 +441,25 @@ const CheckoutPage = () => {
                     )}
                   </div>
 
-                  <div className="space-y-2 mb-4">
-                    <div className="flex justify-between font-body text-sm">
-                      <span className="text-muted-foreground">Subtotal</span>
-                      <span className="text-foreground">₹{subtotal.toLocaleString()}</span>
+                  <div className="space-y-3 mb-6 bg-muted/30 p-4 rounded-xl">
+                    <div className="flex justify-between items-center font-body text-sm">
+                      <span className="text-muted-foreground font-medium">Subtotal</span>
+                      <span className="text-foreground font-bold">₹{subtotal.toLocaleString()}</span>
                     </div>
                     {appliedCoupon && (
-                      <div className="flex justify-between font-body text-sm">
-                        <span className="text-muted-foreground">Discount</span>
-                        <span className="text-primary font-medium">-₹{discount.toLocaleString()}</span>
+                      <div className="flex justify-between items-center font-body text-sm">
+                        <span className="text-muted-foreground font-medium">Discount ({appliedCoupon.code})</span>
+                        <span className="text-primary font-bold">-₹{discount.toLocaleString()}</span>
                       </div>
                     )}
-                    <div className="flex justify-between font-body text-sm">
-                      <span className="text-muted-foreground">Delivery</span>
-                      <span className={shipping === 0 ? "text-primary font-medium" : "text-foreground"}>{shipping === 0 ? "FREE" : `₹${shipping}`}</span>
+                    <div className="flex justify-between items-center font-body text-sm">
+                      <span className="text-muted-foreground font-medium">Delivery</span>
+                      <span className={shipping === 0 ? "text-primary font-bold" : "text-foreground font-bold"}>{shipping === 0 ? "FREE" : `₹${shipping}`}</span>
                     </div>
-                  </div>
-                  <div className="flex justify-between font-display text-lg font-semibold pt-3 border-t border-border mb-4">
-                    <span>Total</span>
-                    <span>₹{total.toLocaleString()}</span>
+                    <div className="flex justify-between items-center font-display text-lg font-bold pt-3 border-t border-border mt-1">
+                      <span className="text-foreground uppercase tracking-wider">Total</span>
+                      <span className="text-foreground">₹{total.toLocaleString()}</span>
+                    </div>
                   </div>
                   {step === 2 && (
                     <Button variant="hero" size="xl" className="w-full h-12 sm:h-14 mb-4" onClick={handlePlaceOrder} disabled={isSubmitting}>

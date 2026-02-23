@@ -13,7 +13,7 @@ interface AnalyticsEvent {
 
 export const trackEvent = (eventName: string, properties: AnalyticsEvent = {}) => {
     // In production, this would send to dataLayer (GTM) or gtag (GA4)
-    if (process.env.NODE_ENV === 'production') {
+    if (import.meta.env.PROD) {
         // window.dataLayer?.push({ event: eventName, ...properties });
     }
 
@@ -22,7 +22,7 @@ export const trackEvent = (eventName: string, properties: AnalyticsEvent = {}) =
 };
 
 export const trackPageView = (url: string) => {
-    if (process.env.NODE_ENV === 'production') {
+    if (import.meta.env.PROD) {
         // window.gtag?.('config', 'GA_MEASUREMENT_ID', { page_path: url });
     }
     console.log(`[Analytics PageView]: ${url}`);

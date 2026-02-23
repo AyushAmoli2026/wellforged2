@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { Check, Leaf, Shield, FlaskConical, QrCode, Atom, Droplet, Heart, Globe, Clock, Award, Star, CheckCircle, HelpCircle, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Play } from "lucide-react";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import ScrollReveal from "@/components/ScrollReveal";
 import ProductSelector from "@/components/ProductSelector";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { API_BASE_URL } from "@/config";
 import productImage1 from "@/assets/product-carousel-1.jpg";
 import productImage2 from "@/assets/product-carousel-2.jpg";
 import productImage3 from "@/assets/product-carousel-3.jpg";
@@ -15,11 +16,34 @@ import productImage4 from "@/assets/product-carousel-4.jpg";
 import productImage5 from "@/assets/product-carousel-5.jpg";
 
 const ProductPage = () => {
+    const [product, setProduct] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [isAutoPlaying, setIsAutoPlaying] = useState(true);
     const [isTransitioning, setIsTransitioning] = useState(false);
     const navigate = useNavigate();
+    const autoPlayRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const touchStartX = useRef(0);
+    const touchEndX = useRef(0);
+
+    const slug = "moringa-powder"; // This can be dynamic from URL params later
+
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/products/${slug}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setProduct(data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch product:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchProduct();
+    }, [slug]);
 
     const handleProcessTransition = () => {
         setIsTransitioning(true);
@@ -29,65 +53,97 @@ const ProductPage = () => {
         }, 800);
     };
 
-    const productImages = [productImage1, productImage2, productImage3, productImage4, productImage5];
+    // Images fallback logic
+    const backendImages = product?.images?.map((img: any) => img.image_url) || [];
+    const productImages = backendImages.length > 0 ? backendImages : [productImage1, productImage2, productImage3, productImage4, productImage5];
 
-    const nextImage = () => {
-        setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
-        setIsAutoPlaying(false);
-    };
-
-    const prevImage = () => {
-        setCurrentImageIndex((prev) => (prev - 1 + productImages.length) % productImages.length);
-        setIsAutoPlaying(false);
-    };
+    const startAutoPlay = useCallback(() => {
+        if (autoPlayRef.current) clearInterval(autoPlayRef.current);
+        if (productImages.length <= 1) return;
+        autoPlayRef.current = setInterval(() => {
+            setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
+        }, 4000);
+    }, [productImages.length]);
 
     useEffect(() => {
-        if (!isAutoPlaying) return;
-        const interval = setInterval(() => {
-            setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
-        }, 5000);
-        return () => clearInterval(interval);
-    }, [isAutoPlaying, productImages.length]);
+        startAutoPlay();
+        return () => { if (autoPlayRef.current) clearInterval(autoPlayRef.current); };
+    }, [startAutoPlay]);
 
-    const trustHighlights = [
-        { icon: Leaf, label: "Single Ingredient" },
-        { icon: Shield, label: "No Additives or Fillers" },
-        { icon: FlaskConical, label: "Third-Party Lab Tested" },
-        { icon: QrCode, label: "Batch-Wise QR Verification" },
-    ];
-    const ingredients = [
-        { icon: Leaf, name: "Moringa Oleifera", description: "Pure leaf powder" },
-        { icon: Atom, name: "Natural Compounds", description: "Vitamins & minerals" },
-        { icon: Droplet, name: "No Additives", description: "Zero fillers" },
-        { icon: Heart, name: "Clean Formula", description: "Single ingredient" },
-    ];
-    const technicalSpecs = {
-        sourcingOrigin: { icon: Globe, title: "Sourcing Origin", details: [{ label: "Region", value: "Southern India" }, { label: "Farm Type", value: "Organic Certified Farms" }, { label: "Harvest Method", value: "Hand-picked, shade-dried" }, { label: "Soil Type", value: "Nutrient-rich volcanic soil" }, { label: "Climate", value: "Tropical, optimal humidity" }] },
-        testingFrequency: { icon: Clock, title: "Testing Frequency", details: [{ label: "Heavy Metals", value: "Every batch" }, { label: "Microbial Testing", value: "Every batch" }, { label: "Potency Verification", value: "Every batch" }, { label: "Identity Testing", value: "Every batch" }, { label: "Pesticide Screening", value: "Quarterly" }] },
-        purityStandards: { icon: Award, title: "Purity Standards", details: [{ label: "Lead", value: "<0.5 ppm (FDA limit: 1.0 ppm)" }, { label: "Mercury", value: "<0.1 ppm (FDA limit: 0.5 ppm)" }, { label: "Arsenic", value: "<0.2 ppm (FDA limit: 1.0 ppm)" }, { label: "Moisture Content", value: "<5% (Limit: 8%)" }, { label: "Purity Level", value: ">99.5%" }] },
+    const goTo = (idx: number) => {
+        setCurrentImageIndex(idx);
+        startAutoPlay();
     };
-    const faqs = [
-        { question: "Is this product lab tested?", answer: "Yes, every batch undergoes independent third-party laboratory testing. You can verify the results using the QR code on the packaging." },
-        { question: "Is it suitable for daily use?", answer: "Yes, designed for consistent daily use. We recommend mixing 1 teaspoon (approximately 5g) with water, smoothies, or food, once daily." },
-        { question: "Does it contain additives or fillers?", answer: "No. Contains only 100% moringa leaf powder. No artificial colors, flavors, preservatives, sugars, fillers, or flow agents." },
-        { question: "Who should consult a professional before use?", answer: "We recommend consulting a healthcare professional if you are pregnant, nursing, taking medication, or have a pre-existing medical condition." },
+    const nextImage = () => goTo((currentImageIndex + 1) % productImages.length);
+    const prevImage = () => goTo((currentImageIndex - 1 + productImages.length) % productImages.length);
+
+    const onTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.changedTouches[0].screenX; };
+    const onTouchEnd = (e: React.TouchEvent) => {
+        touchEndX.current = e.changedTouches[0].screenX;
+        const diff = touchStartX.current - touchEndX.current;
+        if (Math.abs(diff) > 40) diff > 0 ? nextImage() : prevImage();
+    };
+
+    const trustHighlights = product?.metadata
+        ?.filter((m: any) => m.category === 'highlight')
+        .map((m: any) => ({
+            icon: (m.icon_name === 'Leaf' ? Leaf : m.icon_name === 'Shield' ? Shield : m.icon_name === 'FlaskConical' ? FlaskConical : CheckCircle),
+            label: m.key
+        })) || [
+            { icon: Leaf, label: "Single Ingredient" },
+            { icon: Shield, label: "No Additives or Fillers" },
+            { icon: FlaskConical, label: "Third-Party Lab Tested" },
+            { icon: QrCode, label: "Batch-Wise QR Verification" },
+        ];
+
+    const ingredients = product?.metadata
+        ?.filter((m: any) => m.category === 'ingredient')
+        .map((m: any) => ({
+            icon: Leaf,
+            name: m.key,
+            description: m.value
+        })) || [
+            { icon: Leaf, name: "Moringa Oleifera", description: "Pure leaf powder" },
+        ];
+
+    // Group specs by icon/title if they have display_order or just show all
+    const specs = product?.metadata?.filter((m: any) => m.category === 'spec') || [];
+
+    const technicalSpecs = {
+        sourcingOrigin: {
+            icon: Globe,
+            title: "Technical Overview",
+            details: specs.map((s: any) => ({ label: s.key, value: s.value }))
+        },
+    };
+
+    const faqs = product?.faqs?.length > 0 ? product.faqs : [
+        { question: "Is this product lab tested?", answer: "Yes, every batch undergoes independent third-party laboratory testing." }
     ];
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-background">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            </div>
+        );
+    }
 
     return (
         <>
             <Helmet>
-                <title>WellForged Moringa Leaf Powder | Clean Single-Ingredient Wellness</title>
-                <meta name="description" content="WellForged Moringa Leaf Powder - Clean, single-ingredient moringa powder crafted with disciplined sourcing, careful processing, and verified quality." />
+                <title>{product?.name || 'WellForged Moringa Leaf Powder'} | Clean Single-Ingredient Wellness</title>
+                <meta name="description" content={product?.base_description || "WellForged Moringa Leaf Powder - Clean, single-ingredient moringa powder crafted with disciplined sourcing, careful processing, and verified quality."} />
                 <script type="application/ld+json">
                     {`
                     {
                       "@context": "https://schema.org/",
                       "@type": "Product",
-                      "name": "WellForged Moringa Leaf Powder",
+                      "name": "${product?.name || 'WellForged Moringa Leaf Powder'}",
                       "image": [
                         "https://wellforged.in/assets/product-carousel-1.jpg"
                       ],
-                      "description": "Pure, nutrient-rich moringa powder—lab tested, no fillers, nothing hidden. Just nature's most powerful green, delivered fresh.",
+                      "description": "${product?.base_description || "Pure, nutrient-rich moringa powder—lab tested, no fillers, nothing hidden. Just nature's most powerful green, delivered fresh."}",
                       "sku": "WF-MOR-250",
                       "brand": {
                         "@type": "Brand",
@@ -117,64 +173,54 @@ const ProductPage = () => {
                         <div className="grid lg:grid-cols-2 gap-[var(--space-md)] lg:gap-[var(--space-xl)]">
                             <div className="lg:sticky lg:top-24 lg:self-start">
                                 <ScrollReveal animation="fade-right">
-                                    <div className="relative group">
-                                        <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-br from-primary/20 via-gold/30 to-primary/20 rounded-xl sm:rounded-3xl blur-xl sm:blur-2xl opacity-40 group-hover:opacity-100 transition-all duration-1000" />
-                                        <div className="relative bg-white rounded-xl sm:rounded-3xl overflow-hidden shadow-2xl border border-gold/10 w-full max-w-[420px] sm:max-w-[520px] lg:max-w-full mx-auto">
-                                            <div className="aspect-[4/5] sm:aspect-square lg:aspect-[4/5] max-h-[65vh] relative overflow-hidden bg-white flex items-center justify-center">
-                                                {productImages.map((img, index) => (
-                                                    <div
-                                                        key={index}
-                                                        className={`absolute inset-0 transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] transform ${index === currentImageIndex ? "opacity-100 scale-100" : "opacity-0 scale-95"
-                                                            }`}
-                                                    >
+                                    <div
+                                        className="relative w-full max-w-[420px] sm:max-w-[500px] lg:max-w-full mx-auto select-none"
+                                        onTouchStart={onTouchStart}
+                                        onTouchEnd={onTouchEnd}
+                                    >
+                                        <div className="aspect-square sm:aspect-[4/5] overflow-hidden rounded-2xl bg-[#f6f8f5]">
+                                            <div
+                                                className="flex h-full transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]"
+                                                style={{ transform: `translateX(-${currentImageIndex * (100 / productImages.length)}%)`, width: `${productImages.length * 100}%` }}
+                                            >
+                                                {productImages.map((img, i) => (
+                                                    <div key={i} className="h-full flex-shrink-0" style={{ width: `${100 / productImages.length}%` }}>
                                                         <img
                                                             src={img}
-                                                            alt={`${trustHighlights[currentImageIndex]?.label || 'WellForged Moringa Product'} - View ${index + 1}`}
-                                                            loading={index === 0 ? "eager" : "lazy"}
-                                                            className="w-full h-full object-contain p-4 sm:p-8"
+                                                            alt={`${product?.name || 'Product'} - view ${i + 1}`}
+                                                            loading={i === 0 ? "eager" : "lazy"}
+                                                            className="w-full h-full object-contain p-6 sm:p-10"
                                                         />
                                                     </div>
                                                 ))}
-
-                                                {/* Navigation Arrows */}
-                                                <button
-                                                    onClick={prevImage}
-                                                    className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/5 hover:bg-black/10 backdrop-blur-sm transition-all duration-300 hover:scale-110 text-primary z-20"
-                                                    aria-label="Previous image"
-                                                >
-                                                    <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
-                                                </button>
-                                                <button
-                                                    onClick={nextImage}
-                                                    className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/5 hover:bg-black/10 backdrop-blur-sm transition-all duration-300 hover:scale-110 text-primary z-20"
-                                                    aria-label="Next image"
-                                                >
-                                                    <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
-                                                </button>
-
-                                                {/* Dots Indicator */}
-                                                <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 flex gap-1 sm:gap-1.5">
-                                                    {productImages.map((_, index) => (
-                                                        <button
-                                                            key={index}
-                                                            onClick={() => { setCurrentImageIndex(index); setIsAutoPlaying(false); }}
-                                                            className="p-2 transition-all duration-300"
-                                                            aria-label={`Go to slide ${index + 1}`}
-                                                        >
-                                                            <div className={`h-2 rounded-full transition-all duration-300 ${index === currentImageIndex ? "bg-primary w-5" : "bg-primary/20 w-2 hover:bg-primary/40"}`} />
-                                                        </button>
-                                                    ))}
-                                                </div>
                                             </div>
                                         </div>
+
+                                        {productImages.length > 1 && (
+                                            <div className="flex items-center justify-center gap-1.5 mt-3">
+                                                {productImages.map((_, i) => (
+                                                    <button
+                                                        key={i}
+                                                        onClick={() => goTo(i)}
+                                                        aria-label={`Slide ${i + 1}`}
+                                                        className="transition-all duration-300"
+                                                    >
+                                                        <div className={`h-1.5 rounded-full transition-all duration-300 ${i === currentImageIndex
+                                                            ? "w-6 bg-primary"
+                                                            : "w-1.5 bg-primary/25 hover:bg-primary/50"
+                                                            }`} />
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 </ScrollReveal>
                             </div>
                             <div className="space-y-4 sm:space-y-5 lg:space-y-6">
                                 <ScrollReveal animation="fade-left">
                                     <div className="space-y-[var(--space-xs)]">
-                                        <h1 className="font-display font-semibold text-foreground leading-[1.1]" style={{ fontSize: "var(--text-4xl)" }}>WellForged – Moringa Powder</h1>
-                                        <p className="font-body text-muted-foreground leading-relaxed" style={{ fontSize: "var(--text-base)" }}>Pure, nutrient-rich moringa powder—lab tested, no fillers, nothing hidden. Just nature's most powerful green, delivered fresh.</p>
+                                        <h1 className="font-display font-semibold text-foreground leading-[1.1]" style={{ fontSize: "var(--text-4xl)" }}>{product?.name || 'WellForged – Moringa Powder'}</h1>
+                                        <p className="font-body text-muted-foreground leading-relaxed" style={{ fontSize: "var(--text-base)" }}>{product?.base_description || "Pure, nutrient-rich moringa powder—lab tested, no fillers, nothing hidden. Just nature's most powerful green, delivered fresh."}</p>
                                     </div>
                                 </ScrollReveal>
                                 <ScrollReveal animation="fade-up">
@@ -189,11 +235,9 @@ const ProductPage = () => {
                                 </ScrollReveal>
                                 <ScrollReveal animation="fade-up">
                                     <div className="bg-card rounded-xl sm:rounded-2xl p-4 sm:p-5 lg:p-6 border border-gold/10 shadow-gold group">
-                                        <ProductSelector />
+                                        <ProductSelector product={product} />
                                     </div>
                                 </ScrollReveal>
-
-
                             </div>
                         </div>
                         <div className="mt-[var(--space-lg)] sm:mt-[var(--space-xl)]">
@@ -227,7 +271,7 @@ const ProductPage = () => {
                         </ScrollReveal>
                         <div className="max-w-4xl mx-auto">
                             <Accordion type="single" collapsible className="space-y-4">
-                                {Object.values(technicalSpecs).map((spec, index) => (
+                                {Object.values(technicalSpecs).map((spec: any, index: number) => (
                                     <AccordionItem key={spec.title} value={`spec-${index}`} className="bg-card rounded-xl border border-border px-4 sm:px-6">
                                         <AccordionTrigger className="hover:no-underline py-4 sm:py-6 group">
                                             <div className="flex items-center gap-3 sm:gap-4 text-left">
@@ -242,7 +286,7 @@ const ProductPage = () => {
                                         </AccordionTrigger>
                                         <AccordionContent className="pb-6">
                                             <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-2 pt-2 border-t border-border/50">
-                                                {spec.details.map((detail, i) => (
+                                                {spec.details.map((detail: any, i: number) => (
                                                     <li key={i} className="flex justify-between items-center py-2 border-b border-border/30 last:border-0 sm:last:border-b">
                                                         <span className="font-body text-xs sm:text-sm text-muted-foreground">{detail.label}</span>
                                                         <span className="font-body text-xs sm:text-sm font-semibold text-foreground text-right">{detail.value}</span>

@@ -17,44 +17,22 @@ interface SKU {
   stock?: number;
 }
 
-const ProductSelector = () => {
-  const [skus, setSkus] = useState<SKU[]>([
-    { id: "76d371e6-e301-42d4-8920-d110e4e1182e", size: "100g", price: 349 },
-    { id: "3700f25c-5050-4679-a3ca-9b4e8ecd3daa", size: "250g", price: 549, originalPrice: 699, label: "Best Value" },
-  ]);
-  const [selectedSku, setSelectedSku] = useState<SKU>(skus[1]);
-  const [isLoading, setIsLoading] = useState(true);
+const ProductSelector = ({ product }: { product: any }) => {
+  const [selectedSku, setSelectedSku] = useState<any>(null);
+
+  useEffect(() => {
+    if (product?.variants?.length > 0) {
+      setSelectedSku(product.variants[0]);
+    }
+  }, [product]);
 
   const { addItem, totalItems, setIsOpen } = useCart();
   const { isLoggedIn, setPendingCartAction, setRedirectUrl } = useAuth();
   const navigate = useNavigate();
 
-  // Fetch live stock for SKUs
-  useEffect(() => {
-    const fetchStock = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/products`);
-        if (response.ok) {
-          const products = await response.json();
-          const updatedSkus = skus.map(sku => {
-            const foundProduct = products.find((p: any) => p.id === sku.id);
-            return foundProduct ? { ...sku, stock: foundProduct.stock } : sku;
-          });
-          setSkus(updatedSkus);
-          // Update selected SKU with stock
-          const currentSelected = updatedSkus.find(s => s.id === selectedSku.id);
-          if (currentSelected) setSelectedSku(currentSelected);
-        }
-      } catch (error) {
-        console.error("Failed to fetch stock:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchStock();
-  }, []);
-
   const handleAddToCart = async () => {
+    if (!selectedSku) return;
+
     if (selectedSku.stock !== undefined && selectedSku.stock <= 0) {
       toast.error("This size is currently out of stock");
       return;
@@ -69,49 +47,48 @@ const ProductSelector = () => {
 
     await addItem({
       id: selectedSku.id,
-      name: `Moringa Powder - ${selectedSku.size}`,
-      size: selectedSku.size,
+      name: `${product.name} - ${selectedSku.label}`,
+      size: selectedSku.label,
       price: selectedSku.price,
-      originalPrice: selectedSku.originalPrice,
-      image: productImage
+      originalPrice: selectedSku.original_price,
+      image: product.images?.[0]?.image_url || productImage
     });
   };
+
+  if (!product || !selectedSku) return null;
 
   return (
     <div className="space-y-[var(--space-md)]">
       <div className="space-y-[var(--space-xs)]">
         <label className="font-body text-[var(--text-sm)] font-medium text-foreground uppercase tracking-widest">Select Size</label>
         <div className="grid grid-cols-2 gap-[var(--space-xs)]">
-          {skus.map((sku) => (
+          {product.variants.map((sku: any) => (
             <button
               key={sku.id}
               onClick={() => setSelectedSku(sku)}
               className={`relative p-3 sm:p-4 rounded-xl border-2 transition-all duration-200 text-left min-h-[44px] ${selectedSku.id === sku.id ? "border-primary bg-primary/5" : "border-border bg-card hover:border-primary/50"
                 } ${sku.stock === 0 ? "opacity-60 grayscale-[0.5]" : ""}`}
             >
-              {sku.label && <span className="absolute -top-2 left-2 sm:left-3 px-1.5 py-0.5 bg-gold text-[9px] sm:text-[10px] font-semibold rounded-full text-foreground whitespace-nowrap">{sku.label}</span>}
-              <div className="font-display font-semibold text-foreground" style={{ fontSize: "var(--text-base)" }}>{sku.size}</div>
+              <div className="font-display font-semibold text-foreground" style={{ fontSize: "var(--text-base)" }}>{sku.label}</div>
               <div className="flex items-center gap-2 mt-1">
                 <span className="font-display font-bold text-primary" style={{ fontSize: "var(--text-lg)" }}>₹{sku.price}</span>
-                {sku.originalPrice && <span className="font-body text-muted-foreground line-through" style={{ fontSize: "var(--text-xs)" }}>₹{sku.originalPrice}</span>}
+                {sku.original_price && <span className="font-body text-muted-foreground line-through" style={{ fontSize: "var(--text-xs)" }}>₹{sku.original_price}</span>}
               </div>
 
               {/* Stock Status */}
-              {!isLoading && sku.stock !== undefined && (
-                <div className="mt-2">
-                  {sku.stock === 0 ? (
-                    <span className="text-[10px] sm:text-xs font-bold text-destructive uppercase tracking-wider flex items-center gap-1">
-                      <AlertCircle className="h-3 w-3" /> Out of Stock
-                    </span>
-                  ) : sku.stock < 20 ? (
-                    <span className="text-[10px] sm:text-xs font-bold text-gold uppercase tracking-wider flex items-center gap-1">
-                      <AlertCircle className="h-3 w-3" /> Only {sku.stock} left
-                    </span>
-                  ) : (
-                    <span className="text-[10px] sm:text-xs font-medium text-primary uppercase tracking-wider">In Stock</span>
-                  )}
-                </div>
-              )}
+              <div className="mt-2">
+                {sku.stock === 0 ? (
+                  <span className="text-[10px] sm:text-xs font-bold text-destructive uppercase tracking-wider flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" /> Out of Stock
+                  </span>
+                ) : sku.stock < 20 ? (
+                  <span className="text-[10px] sm:text-xs font-bold text-gold uppercase tracking-wider flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" /> Only {sku.stock} left
+                  </span>
+                ) : (
+                  <span className="text-[10px] sm:text-xs font-medium text-primary uppercase tracking-wider">In Stock</span>
+                )}
+              </div>
             </button>
           ))}
         </div>
@@ -136,7 +113,6 @@ const ProductSelector = () => {
           </Button>
         )}
       </div>
-
     </div>
   );
 };
