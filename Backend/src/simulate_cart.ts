@@ -31,7 +31,7 @@ async function simulateAddToCart() {
         console.log("Current Cart Items for this profile with Prices:");
         console.table(verify.rows);
 
-    } catch (err) {
+    } catch (err: any) {
         console.error("Simulation failed:", err);
     } finally {
         await pool.end();

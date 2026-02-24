@@ -6,7 +6,9 @@
         "Backend"
     ],
     "scripts": {
+        "setup": "node scripts/dev-setup.js",
         "dev": "npm run dev --workspaces --if-present",
+        "dev-all": "npm run build --workspace=Backend && npx concurrently -n \"BACKEND,FRONTEND\" -c \"green,blue\" \"npm run dev --workspace=Backend\" \"npm run dev --workspace=frontend\"",
         "build": "npm run build --workspaces --if-present",
         "test": "npm run test --workspaces --if-present",
         "test:e2e": "npm run test:e2e --workspace=frontend"

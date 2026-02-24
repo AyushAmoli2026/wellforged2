@@ -68,7 +68,7 @@ async function auditDatabase() {
         fs.writeFileSync('audit_report.md', output);
         log("\nAudit report written to audit_report.md");
 
-    } catch (err) {
+    } catch (err: any) {
         log(`\nERROR DURING AUDIT: ${err.message}`);
     } finally {
         await pool.end();

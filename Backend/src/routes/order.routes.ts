@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createOrder, getOrders, getOrderDetails, updateOrderStatus } from '../controllers/order.controller.js';
+import { createOrder, getOrders, getOrderDetails, updateOrderStatus, getAllOrdersForAdmin } from '../controllers/order.controller.js';
 import { processPayment, getPaymentStatus } from '../controllers/payment.controller.js';
 import { authenticate, authorize } from '../middlewares/auth.middleware.js';
 import { validate } from '../middlewares/validate.middleware.js';
@@ -10,6 +10,7 @@ const router = Router();
 // Order routes
 router.post('/', authenticate, validate(createOrderSchema), createOrder);
 router.get('/', authenticate, getOrders);
+router.get('/admin/all', authenticate, authorize(['admin']), getAllOrdersForAdmin);
 router.get('/:id', authenticate, getOrderDetails);
 router.patch('/:id/status', authenticate, authorize(['admin']), updateOrderStatus);
 

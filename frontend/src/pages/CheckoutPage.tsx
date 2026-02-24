@@ -9,7 +9,13 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { API_BASE_URL } from "@/config";
+import { API_BASE_URL, APP_CONFIG } from "@/config";
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 const CheckoutPage = () => {
   const { items, subtotal, clearCart } = useCart();
@@ -195,30 +201,55 @@ const CheckoutPage = () => {
       const orderData = await orderResponse.json();
       if (!orderResponse.ok) throw new Error(orderData.message || "Failed to create order");
 
-      // 3. Record Payment (Simulation for now, but recording in DB)
-      const paymentResponse = await fetch(`${API_BASE_URL}/api/orders/payment`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+      // 3. Launch Razorpay Modal
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: Math.round(total * 100),
+        currency: "INR",
+        name: APP_CONFIG.SITE_NAME,
+        description: "Wellness Supplements Purchase",
+        image: "/favicon.png",
+        order_id: orderData.razorpay_order_id,
+        handler: async function (response: any) {
+          try {
+            const verifyResponse = await fetch(`${API_BASE_URL}/api/orders/payment`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+              },
+              body: JSON.stringify({
+                order_id: orderData.id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+              })
+            });
+
+            if (verifyResponse.ok) {
+              toast.success("Payment successful! Order placed.");
+              clearCart();
+              navigate("/order-success");
+            } else {
+              const error = await verifyResponse.json();
+              throw new Error(error.message || "Payment verification failed");
+            }
+          } catch (err: any) {
+            toast.error(err.message || "Something went wrong during verification");
+          }
         },
-        body: JSON.stringify({
-          order_id: orderData.id,
-          payment_method: selectedPayment,
-          transaction_id: `WF-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-          payment_signature: "mock_signature_for_audit_fix"
-        })
-      });
+        prefill: {
+          name: formData.fullName,
+          contact: formData.phone,
+        },
+        theme: {
+          color: "#2C4C3B" // WellForged brand green
+        }
+      };
 
-      if (!paymentResponse.ok) {
-        console.error("Failed to record payment details");
-        // We don't throw here to avoid confusing the user since order is placed, 
-        // but in real app we'd verify this strictly.
-      }
+      const rzp = new window.Razorpay(options);
+      rzp.open();
 
-      toast.success("Order placed successfully!");
-      clearCart();
-      navigate("/order-success");
     } catch (error: any) {
       toast.error(error.message || "Something went wrong");
     } finally {

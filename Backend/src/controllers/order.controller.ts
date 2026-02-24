@@ -1,6 +1,7 @@
 import type { Response } from 'express';
 import pool from '../config/db.js';
 import MailerService from '../services/mailer.service.js';
+import razorpay from '../config/razorpay.js';
 
 export const createOrder = async (req: any, res: Response) => {
     const { address_id, coupon_id, idempotency_key } = req.body;
@@ -85,12 +86,20 @@ export const createOrder = async (req: any, res: Response) => {
         }
         const addressSnapshot = addressResult.rows[0];
 
-        // 4. Create order
+        // 4. Create Razorpay Order
+        const amountPaisa = Math.round(total_amount * 100);
+        const razorpayOrder = await razorpay.orders.create({
+            amount: amountPaisa,
+            currency: "INR",
+            receipt: `receipt_${Date.now()}`
+        });
+
+        // 5. Create local order
         const order_number = `WF-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
         const orderResult = await client.query(
-            `INSERT INTO orders (profile_id, order_number, total_amount, discount_amount, coupon_id, shipping_address_id, address_snapshot, subtotal, shipping_amount) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
-            [req.user.id, order_number, total_amount, discount_amount, coupon_id, address_id, JSON.stringify(addressSnapshot), subtotal, shipping_amount]
+            `INSERT INTO orders (profile_id, order_number, total_amount, discount_amount, coupon_id, shipping_address_id, address_snapshot, subtotal, shipping_amount, razorpay_order_id) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
+            [req.user.id, order_number, total_amount, discount_amount, coupon_id, address_id, JSON.stringify(addressSnapshot), subtotal, shipping_amount, razorpayOrder.id]
         );
         const order = orderResult.rows[0];
 
@@ -120,6 +129,25 @@ export const createOrder = async (req: any, res: Response) => {
         res.status(500).json({ message: error.message });
     } finally {
         client.release();
+    }
+};
+
+export const getAllOrdersForAdmin = async (req: any, res: Response) => {
+    try {
+        // Simple role check (should be in middleware ideally, but here for speed/audit fix)
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Forbidden: Admin access required' });
+        }
+
+        const result = await pool.query(
+            `SELECT o.*, p.full_name, p.phone 
+             FROM orders o 
+             JOIN profiles p ON o.profile_id = p.id 
+             ORDER BY o.created_at DESC`
+        );
+        res.json(result.rows);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
     }
 };
 

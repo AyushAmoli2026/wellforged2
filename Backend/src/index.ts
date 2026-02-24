@@ -41,10 +41,24 @@ const authLimiter = rateLimit({
 // Middleware
 app.use(helmet());
 app.use(limiter);
+const allowedOrigins = (process.env.ALLOWED_ORIGIN || '').split(',').map(o => o.trim());
 app.use(cors({
-    origin: process.env.ALLOWED_ORIGIN || '*',
+    origin: (origin, callback) => {
+        // In development, allow everything and reflect the origin correctly
+        if (process.env.NODE_ENV !== 'production') {
+            return callback(null, true);
+        }
+
+        // In production, check against the list
+        if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true
+    credentials: true,
+    exposedHeaders: ['set-cookie']
 }));
 app.use(express.json());
 

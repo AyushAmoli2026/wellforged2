@@ -66,7 +66,7 @@ const AdminDashboard = () => {
 
     const fetchOrders = async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/orders`, {
+            const response = await fetch(`${API_BASE_URL}/api/orders/admin/all`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (response.ok) {

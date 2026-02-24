@@ -110,13 +110,42 @@ const AuthPage = () => {
         }
     };
 
-    const handleRequestSignUpOtp = (e: React.FormEvent) => {
+    const handleRequestSignUpOtp = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!fullName.trim()) { toast({ title: "Name Required", variant: "destructive" }); return; }
         if (phone.length !== 10) { toast({ title: "Invalid Number", description: "Enter a valid 10-digit number.", variant: "destructive" }); return; }
         if (!acceptTerms) { toast({ title: "Terms Required", description: "Please accept the terms.", variant: "destructive" }); return; }
-        setSignUpStep("otp");
-        toast({ title: "OTP Sent ✓", description: "Check your WhatsApp for the 4-digit code." });
+
+        setSignUpLoading(true);
+        try {
+            // Check if phone already exists
+            const res = await fetch(`${API_BASE_URL}/api/auth/check-phone`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ mobile_number: phone }),
+            });
+            const data = await res.json();
+
+            // For Signup, we WANT check-phone to return 404 (Not Found)
+            if (res.status === 200) {
+                throw new Error("Phone number already registered. Please sign in.");
+            }
+
+            if (res.status !== 404) {
+                throw new Error(data.message || "Failed to verify phone number");
+            }
+
+            setSignUpStep("otp");
+            toast({ title: "OTP Sent ✓", description: "Check your WhatsApp for the 4-digit code." });
+        } catch (err: any) {
+            toast({
+                title: "Sign Up Blocked",
+                description: err.message,
+                variant: "destructive"
+            });
+        } finally {
+            setSignUpLoading(false);
+        }
     };
 
     const handleSignUp = async (e: React.FormEvent) => {

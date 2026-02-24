@@ -18,7 +18,7 @@ async function checkCartAndOrders() {
         const profiles = await pool.query("SELECT id, full_name, phone FROM profiles");
         console.table(profiles.rows);
 
-    } catch (err) {
+    } catch (err: any) {
         console.error(err);
     } finally {
         await pool.end();
