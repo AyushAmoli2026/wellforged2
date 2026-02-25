@@ -38,6 +38,7 @@ graph TD
 ```
 
 ## 📂 Repository Navigation (AI-Friendly)
+- **[HANDOVER.md](file:///d:/wellforged%20-%202/HANDOVER.md)**: Essential guide for developers and agents taking over the project.
 - **[/frontend](file:///d:/wellforged%20-%202/frontend)**: Client-side application and UI components.
 - **[/Backend](file:///d:/wellforged%20-%202/Backend)**: RESTful API and database controllers.
 - **[/docs](file:///d:/wellforged%20-%202/docs)**: Technical specifications and architecture deep-dives.
